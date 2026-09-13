@@ -124,7 +124,8 @@ def is_relevant(item, config):
     title = (item["title"] or "").lower()
     haystack = f"{item['title']} {item.get('blurb', '')}".lower()
 
-    scope = title if config.get("disease_in_title", True) else haystack
+    in_title = config.get("disease_in_title", True) and not item.get("relax_title_rule")
+    scope = title if in_title else haystack
     if not _matches(scope, config.get("keywords", [])):
         return False
 
@@ -254,11 +255,18 @@ def collect(config, loose=False):
                 "published": when.isoformat() if when else None,
                 "blurb": "",
             }
+            if feed.get("relax_title_rule"):
+                item["relax_title_rule"] = True
 
             # Cheap keyword check on title plus the raw feed summary, so we
             # only pay for a page fetch on items we're likely to keep.
             preview = clean_html(entry.get("summary") or entry.get("description"))
-            if not loose and not is_relevant({"title": title, "blurb": preview}, config):
+            probe = {
+                "title": title,
+                "blurb": preview,
+                "relax_title_rule": feed.get("relax_title_rule", False),
+            }
+            if not loose and not is_relevant(probe, config):
                 continue
 
             item["blurb"] = build_blurb(entry, link, session, allow_fetch)
@@ -383,6 +391,19 @@ def main():
             for t in by_outlet[outlet]:
                 print(f"      {t[:110]}")
         print()
+
+    # Re-apply the current filters to everything already saved, so tightening a
+    # rule or blocking an outlet clears out what it let through before.
+    if not loose:
+        kept_existing = [
+            item for item in existing
+            if source_allowed(item.get("source"), item.get("url", ""), config)
+            and is_relevant(item, config)
+        ]
+        pruned = len(existing) - len(kept_existing)
+        if pruned:
+            print(f"Removed {pruned} saved item(s) that no longer pass the filters")
+        existing = kept_existing
 
     merged = merge(existing, fresh, config)
     added = len(merged) - len(existing)

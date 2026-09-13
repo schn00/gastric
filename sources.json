@@ -82,6 +82,14 @@
       "enabled": true,
       "derive_source": true,
       "note": "Aggregator, query narrowed to advanced/metastatic disease. derive_source pulls the real outlet out of the headline. Links redirect via Google."
+    },
+    {
+      "name": "Google News regulatory",
+      "url": "https://news.google.com/rss/search?q=%28%22gastric+cancer%22+OR+%22gastroesophageal%22+OR+%22stomach+cancer%22+OR+%22GEJ+adenocarcinoma%22%29+AND+%28FDA+OR+approval+OR+approved+OR+EMA+OR+%22phase+3%22+OR+readout+OR+%22breakthrough+therapy%22+OR+%22priority+review%22+OR+%22orphan+drug%22+OR+launch%29&hl=en-US&gl=US&ceid=US:en",
+      "enabled": true,
+      "derive_source": true,
+      "relax_title_rule": true,
+      "note": "Second aggregator pass aimed at approvals, regulatory actions and phase 3 readouts, to catch trade press (Endpoints, STAT, Fierce, BioSpace) whose headlines name the drug or company rather than the disease."
     }
   ],
   "context_keywords": [
@@ -212,7 +220,11 @@
     "food network",
     "martha stewart",
     "southern living",
-    "tasting table"
+    "tasting table",
+    "cleveland clinic health essentials",
+    "wicked local",
+    "ani news",
+    "the news mill"
   ],
   "blocked_domains": [
     "people.com",
@@ -255,6 +267,10 @@
     "foodnetwork.com",
     "marthastewart.com",
     "southernliving.com",
-    "tastingtable.com"
+    "tastingtable.com",
+    "health.clevelandclinic.org",
+    "wickedlocal.com",
+    "aninews.in",
+    "thenewsmill.com"
   ]
 }
