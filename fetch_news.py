@@ -81,6 +81,35 @@ def title_key(title):
     return re.sub(r"\s+", " ", t).strip()
 
 
+def source_allowed(outlet, url, config):
+    """Keep medical/scientific outlets, drop consumer and lifestyle press.
+
+    Google News links redirect, so the domain is often useless — the outlet name
+    derived from the headline is the reliable signal there.
+    """
+    name = (outlet or "").strip().lower()
+    try:
+        host = urlsplit(url).netloc.lower()
+    except ValueError:
+        host = ""
+    if host.startswith("www."):
+        host = host[4:]
+
+    allowed = [a.lower() for a in config.get("allowed_sources") or []]
+    if allowed:
+        return any(a == name or a in name or a in host for a in allowed)
+
+    for bad in config.get("blocked_sources") or []:
+        bad = bad.lower()
+        if bad == name or bad in name:
+            return False
+    for domain in config.get("blocked_domains") or []:
+        domain = domain.lower()
+        if host == domain or host.endswith("." + domain):
+            return False
+    return True
+
+
 def _matches(haystack, terms):
     """Whole-word / whole-phrase match, so 'GEJ' doesn't fire inside another word."""
     for term in terms:
@@ -92,9 +121,11 @@ def _matches(haystack, terms):
 
 def is_relevant(item, config):
     """Three gates: the disease, then the setting, then the exclusions."""
+    title = (item["title"] or "").lower()
     haystack = f"{item['title']} {item.get('blurb', '')}".lower()
 
-    if not _matches(haystack, config.get("keywords", [])):
+    scope = title if config.get("disease_in_title", True) else haystack
+    if not _matches(scope, config.get("keywords", [])):
         return False
 
     context = config.get("context_keywords") or []
@@ -198,6 +229,7 @@ def collect(config, loose=False):
             continue
 
         kept = 0
+        blocked = 0
         for entry in parsed.entries:
             title = clean_html(entry.get("title"))
             link = canonical_url(entry.get("link"))
@@ -211,6 +243,10 @@ def collect(config, loose=False):
                     title, outlet = split.group(1).strip(), split.group(2).strip()
 
             when = entry_date(entry)
+            if not source_allowed(outlet, link, config):
+                blocked += 1
+                continue
+
             item = {
                 "title": title,
                 "url": link,
@@ -229,7 +265,10 @@ def collect(config, loose=False):
             items.append(item)
             kept += 1
 
-        print(f"  {name}: {len(parsed.entries)} entries, {kept} relevant")
+        summary = f"  {name}: {len(parsed.entries)} entries, {kept} relevant"
+        if blocked:
+            summary += f", {blocked} dropped on source"
+        print(summary)
 
     return items, problems
 
@@ -319,6 +358,7 @@ def main():
         check_feeds(config)
         return
 
+    dump = "--quiet" not in sys.argv
     loose = "--loose" in sys.argv
     if loose:
         print("Keyword filter off — showing everything the feeds carry.\n")
@@ -332,6 +372,17 @@ def main():
             existing = json.loads(NEWS.read_text()).get("items", [])
         except json.JSONDecodeError:
             print("  news.json was unreadable, starting fresh")
+
+    if dump:
+        print("\nEverything that passed the filter:\n")
+        by_outlet = {}
+        for item in fresh:
+            by_outlet.setdefault(item["source"], []).append(item["title"])
+        for outlet in sorted(by_outlet, key=lambda o: -len(by_outlet[o])):
+            print(f"  {outlet} ({len(by_outlet[outlet])})")
+            for t in by_outlet[outlet]:
+                print(f"      {t[:110]}")
+        print()
 
     merged = merge(existing, fresh, config)
     added = len(merged) - len(existing)
