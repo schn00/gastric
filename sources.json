@@ -58,7 +58,8 @@
     {
       "name": "ASCO Post",
       "url": "https://ascopost.com/rss/",
-      "enabled": true
+      "enabled": false,
+      "note": "This URL returns ~39k entries, so it is not the news feed. Find the real one on ascopost.com and re-enable."
     },
     {
       "name": "Targeted Oncology",

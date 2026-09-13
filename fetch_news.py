@@ -23,7 +23,10 @@ ROOT = Path(__file__).parent
 SOURCES = ROOT / "sources.json"
 NEWS = ROOT / "news.json"
 
-UA = "gastric-watch/1.0 (personal news aggregator)"
+UA = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+)
 TIMEOUT = 20
 
 TRACKING_PARAMS = re.compile(r"^(utm_|fbclid|gclid|mc_cid|mc_eid|ref$|source$)")
@@ -150,9 +153,14 @@ def collect(config, loose=False):
             continue
         name, url = feed["name"], feed["url"]
         try:
-            parsed = feedparser.parse(
-                url, agent=UA, request_headers={"Accept": "application/rss+xml, application/xml, */*"}
-            )
+            resp = session.get(url, timeout=TIMEOUT, headers={
+                "User-Agent": UA,
+                "Accept": "application/rss+xml, application/xml, text/xml, */*",
+            })
+            if resp.status_code != 200:
+                problems.append(f"{name}: HTTP {resp.status_code}")
+                continue
+            parsed = feedparser.parse(resp.content)
         except Exception as exc:
             problems.append(f"{name}: {exc}")
             continue
@@ -258,6 +266,9 @@ def check_feeds(config):
                 ok = False
             elif count == 0:
                 print(f"  [{state}] {name}: 200 but no entries  <- probably wrong URL")
+                ok = False
+            elif count > 500:
+                print(f"  [{state}] {name}: {count} entries  <- not a news feed, disable this")
                 ok = False
             else:
                 newest = parsed.entries[0].get("title", "")[:60]
