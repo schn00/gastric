@@ -118,6 +118,10 @@ def source_allowed(outlet, url, config):
         domain = domain.lower()
         if host == domain or host.endswith("." + domain):
             return False
+        # Aggregators sometimes label an outlet by its domain rather than its
+        # name, so check the outlet string against the domain list too.
+        if name == domain or name.endswith("." + domain) or domain.endswith("." + name):
+            return False
     return True
 
 
