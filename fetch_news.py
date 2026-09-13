@@ -81,6 +81,17 @@ def title_key(title):
     return re.sub(r"\s+", " ", t).strip()
 
 
+OUTLET_SUFFIX = re.compile(r"^(.*?)\s+[-\u2013]\s+([^-\u2013]{2,40})$")
+
+
+def split_outlet(title):
+    """Aggregator headlines arrive as 'Headline - Outlet'. Pull them apart."""
+    match = OUTLET_SUFFIX.match(title or "")
+    if not match:
+        return title, None
+    return match.group(1).strip(), match.group(2).strip()
+
+
 def source_allowed(outlet, url, config):
     """Keep medical/scientific outlets, drop consumer and lifestyle press.
 
@@ -239,9 +250,9 @@ def collect(config, loose=False):
 
             outlet = name
             if feed.get("derive_source"):
-                split = re.match(r"^(.*?)\s+[-\u2013]\s+([^-\u2013]{2,40})$", title)
-                if split:
-                    title, outlet = split.group(1).strip(), split.group(2).strip()
+                stripped, derived = split_outlet(title)
+                if derived:
+                    title, outlet = stripped, derived
 
             when = entry_date(entry)
             if not source_allowed(outlet, link, config):
@@ -395,6 +406,14 @@ def main():
     # Re-apply the current filters to everything already saved, so tightening a
     # rule or blocking an outlet clears out what it let through before.
     if not loose:
+        for item in existing:
+            # Items saved before outlet derivation carry source "Google News" and
+            # keep the real outlet in the title. Recover it so blocks apply.
+            if "news.google.com" in (item.get("url") or "") or item.get("source", "").startswith("Google News"):
+                stripped, derived = split_outlet(item.get("title", ""))
+                if derived:
+                    item["title"], item["source"] = stripped, derived
+
         kept_existing = [
             item for item in existing
             if source_allowed(item.get("source"), item.get("url", ""), config)
