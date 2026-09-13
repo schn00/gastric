@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-13T03:10:36.080248+00:00",
+ "updated": "2026-09-13T03:23:35.727125+00:00",
  "items": [
   {
    "title": "OLR1 Emerges as Key Driver of Gastric Cancer Growth and Immune Evasion",
@@ -231,7 +231,10 @@
    "source": "ANI News",
    "published": "2026-08-14T07:00:00+00:00",
    "blurb": "Doctors report exceptional long-term survival in advanced HER2-Positive Gastric Cancer through personalised multidisciplinary care ANI News",
-   "first_seen": "2026-09-13T03:10:36.078918+00:00"
+   "first_seen": "2026-09-13T03:10:36.078918+00:00",
+   "also_in": [
+    "aninews.in"
+   ]
   },
   {
    "title": "Long-term survival in advanced HER2-positive gastric cancer in India",
@@ -375,7 +378,10 @@
    "source": "verahealth.ai",
    "published": "2026-06-22T05:29:44+00:00",
    "blurb": "Locally advanced gastric cancer: Adding neoadjuvant radiotherapy to perioperative XELOX improves DFS and OS verahealth.ai",
-   "first_seen": "2026-09-13T03:10:36.078918+00:00"
+   "first_seen": "2026-09-13T03:10:36.078918+00:00",
+   "also_in": [
+    "Vera Health"
+   ]
   },
   {
    "title": "Perioperative Serplulimab in PD-L1–Positive Gastric Cancer",
@@ -554,7 +560,10 @@
    "source": "The ASCO Post",
    "published": "2026-04-20T07:00:00+00:00",
    "blurb": "Case 1: Locally Advanced GEJ Adenocarcinoma The ASCO Post",
-   "first_seen": "2026-09-13T03:10:36.078918+00:00"
+   "first_seen": "2026-09-13T03:10:36.078918+00:00",
+   "also_in": [
+    "ascopost.com"
+   ]
   },
   {
    "title": "PD-L1 CPS in gastroesophageal cancer: differences in routine care versus Checkmate 649 and implications for biopsy-site choice and assay standardisation | British Journal of Cancer",
