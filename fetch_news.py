@@ -81,9 +81,34 @@ def title_key(title):
     return re.sub(r"\s+", " ", t).strip()
 
 
-def is_relevant(item, keywords):
+def _matches(haystack, terms):
+    """Whole-word / whole-phrase match, so 'GEJ' doesn't fire inside another word."""
+    for term in terms:
+        pattern = r"(?<![a-z0-9])" + re.escape(term.lower()) + r"(?![a-z0-9])"
+        if re.search(pattern, haystack):
+            return term
+    return None
+
+
+def is_relevant(item, config):
+    """Three gates: the disease, then the setting, then the exclusions."""
     haystack = f"{item['title']} {item.get('blurb', '')}".lower()
-    return any(k.lower() in haystack for k in keywords)
+
+    if not _matches(haystack, config.get("keywords", [])):
+        return False
+
+    context = config.get("context_keywords") or []
+    if context and not _matches(haystack, context):
+        return False
+
+    excluded = _matches(haystack, config.get("exclude_keywords") or [])
+    if excluded:
+        # "unresectable" is the setting we want; "resectable" alone is not.
+        if excluded == "resectable" and _matches(haystack, ["unresectable"]):
+            return True
+        return False
+
+    return True
 
 
 def entry_date(entry):
@@ -146,7 +171,6 @@ def build_blurb(entry, url, session, allow_fetch):
 def collect(config, loose=False):
     session = requests.Session()
     allow_fetch = config.get("fetch_meta_description", True)
-    keywords = config.get("keywords", [])
     items, problems = [], []
 
     for feed in config["feeds"]:
@@ -198,7 +222,7 @@ def collect(config, loose=False):
             # Cheap keyword check on title plus the raw feed summary, so we
             # only pay for a page fetch on items we're likely to keep.
             preview = clean_html(entry.get("summary") or entry.get("description"))
-            if not loose and not is_relevant({"title": title, "blurb": preview}, keywords):
+            if not loose and not is_relevant({"title": title, "blurb": preview}, config):
                 continue
 
             item["blurb"] = build_blurb(entry, link, session, allow_fetch)
