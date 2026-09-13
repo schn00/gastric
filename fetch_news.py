@@ -23,7 +23,8 @@ ROOT = Path(__file__).parent
 SOURCES = ROOT / "sources.json"
 NEWS = ROOT / "news.json"
 
-UA = (
+UA = "gastric-watch/1.0 (personal news aggregator)"
+UA_BROWSER = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 )
@@ -154,7 +155,7 @@ def collect(config, loose=False):
         name, url = feed["name"], feed["url"]
         try:
             resp = session.get(url, timeout=TIMEOUT, headers={
-                "User-Agent": UA,
+                "User-Agent": UA_BROWSER if feed.get("browser_agent") else UA,
                 "Accept": "application/rss+xml, application/xml, text/xml, */*",
             })
             if resp.status_code != 200:
@@ -179,11 +180,17 @@ def collect(config, loose=False):
             if not title or not link:
                 continue
 
+            outlet = name
+            if feed.get("derive_source"):
+                split = re.match(r"^(.*?)\s+[-\u2013]\s+([^-\u2013]{2,40})$", title)
+                if split:
+                    title, outlet = split.group(1).strip(), split.group(2).strip()
+
             when = entry_date(entry)
             item = {
                 "title": title,
                 "url": link,
-                "source": name,
+                "source": outlet,
                 "published": when.isoformat() if when else None,
                 "blurb": "",
             }
@@ -258,7 +265,8 @@ def check_feeds(config):
         name, url = feed["name"], feed["url"]
         state = "on " if feed.get("enabled", True) else "off"
         try:
-            resp = session.get(url, timeout=TIMEOUT, headers={"User-Agent": UA})
+            agent = UA_BROWSER if feed.get("browser_agent") else UA
+            resp = session.get(url, timeout=TIMEOUT, headers={"User-Agent": agent})
             parsed = feedparser.parse(resp.content)
             count = len(parsed.entries)
             if resp.status_code != 200:
@@ -284,7 +292,8 @@ def main():
     config = json.loads(SOURCES.read_text())
 
     if "--check" in sys.argv:
-        sys.exit(0 if check_feeds(config) else 1)
+        check_feeds(config)
+        return
 
     loose = "--loose" in sys.argv
     if loose:

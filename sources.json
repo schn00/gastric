@@ -48,12 +48,15 @@
     {
       "name": "OncLive",
       "url": "https://www.onclive.com/rss/news",
-      "enabled": true
+      "enabled": false,
+      "browser_agent": true,
+      "note": "403 from GitHub Actions under both user-agents - the CDN blocks datacenter IPs. Covered indirectly via Google News."
     },
     {
       "name": "Medscape Oncology",
       "url": "https://www.medscape.com/cx/rssfeeds/2700.xml",
-      "enabled": true
+      "enabled": true,
+      "note": "General Medscape news, not the oncology feed. Works, but gastric hits are occasional."
     },
     {
       "name": "ASCO Post",
@@ -64,12 +67,21 @@
     {
       "name": "Targeted Oncology",
       "url": "https://www.targetedonc.com/rss/news",
-      "enabled": true
+      "enabled": false,
+      "browser_agent": true,
+      "note": "Same 403 as OncLive. Covered indirectly via Google News."
     },
     {
       "name": "Healio Gastrointestinal",
       "url": "https://www.healio.com/rss/hematology-oncology",
       "enabled": true
+    },
+    {
+      "name": "Google News",
+      "url": "https://news.google.com/rss/search?q=%22gastric+cancer%22+OR+%22gastroesophageal%22+OR+%22stomach+cancer%22&hl=en-US&gl=US&ceid=US:en",
+      "enabled": true,
+      "derive_source": true,
+      "note": "Aggregator. derive_source pulls the real outlet out of the headline, so items show as OncLive, Reuters etc. Links redirect via Google."
     }
   ]
 }
