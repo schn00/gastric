@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metastatic gastric cancer — news and trials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:      #fcfcfb;
+  --ink:        #1b1a18;
+  --muted:      #6e6b65;
+  --faint:      #93908a;
+  --rule:       #e3e1db;
+  --rule-firm:  #c9c6be;
+  --accent:     #24506f;
+  --go:         #2f6440;
+  --wait:       #8a5a12;
+  --serif: "Newsreader", Georgia, serif;
+  --sans:  "Inter", system-ui, -apple-system, sans-serif;
+  --mono:  "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #141413; --ink: #e9e7e2; --muted: #98958e; --faint: #75726c;
+    --rule: #2c2b28; --rule-firm: #444239;
+    --accent: #86b4d6; --go: #82b08c; --wait: #d3a45c;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 16px; line-height: 1.6;
+}
+.wrap { max-width: 43rem; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+@media (max-width: 40rem) { .wrap { padding: 2rem 1.15rem 4rem; } }
+
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px;
+}
+
+/* ---- masthead ---- */
+.masthead { display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+  color: var(--faint); margin-bottom: .35rem; }
+h1 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400;
+  line-height: 1.15; margin: 0; letter-spacing: -.01em; color: var(--accent); }
+.synced { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+
+/* collapsible title */
+details.title > summary { list-style: none; cursor: pointer; display: flex;
+  align-items: center; gap: .45rem; }
+details.title > summary::-webkit-details-marker { display: none; }
+.chev { width: 7px; height: 7px; border-right: 1.5px solid var(--faint);
+  border-bottom: 1.5px solid var(--faint); transform: rotate(45deg);
+  margin-top: -4px; transition: transform .15s ease; }
+details.title[open] .chev { transform: rotate(-135deg); margin-top: 2px; }
+details.title > summary:hover .chev { border-color: var(--ink); }
+.fullname { font-family: var(--serif); font-size: 1rem; color: var(--muted);
+  margin: .3rem 0 0; }
+@media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+
+/* ---- tabs ---- */
+.tabs { display: flex; gap: 1.35rem; border-bottom: 1px solid var(--rule-firm);
+  margin-bottom: 1.75rem; }
+.tab { appearance: none; background: none; border: 0; padding: 0 0 .65rem;
+  margin-bottom: -1px; font: inherit; font-size: .9rem; color: var(--muted);
+  cursor: pointer; border-bottom: 2px solid transparent; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.tab .n { font-family: var(--mono); font-size: 10px; color: var(--faint);
+  margin-left: .3rem; }
+
+/* ---- controls ---- */
+.controls { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1.75rem; }
+select {
+  font: inherit; font-size: .82rem; color: var(--ink); background: transparent;
+  border: 1px solid var(--rule-firm); border-radius: 3px; padding: .3rem 1.6rem .3rem .55rem;
+  cursor: pointer; appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) 55%, calc(100% - 10px) 55%;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+}
+.count { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+
+/* ---- date rules ---- */
+.daterule { display: flex; align-items: center; gap: .75rem; margin: 2.25rem 0 1.15rem; }
+.daterule:first-child { margin-top: 0; }
+.daterule span:first-child { font-family: var(--mono); font-size: 11px;
+  letter-spacing: .02em; color: var(--muted); }
+.daterule .line { flex: 1; height: 1px; background: var(--rule); }
+.daterule .new { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+.markread { appearance: none; background: none; border: 0; padding: 0; font: inherit;
+  font-family: var(--mono); font-size: 11px; color: var(--faint); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px; }
+.markread:hover { color: var(--ink); }
+
+/* ---- items ---- */
+.item { display: flex; gap: .85rem; padding-bottom: 1.35rem;
+  border-bottom: 1px solid var(--rule); margin-bottom: 1.35rem; }
+.item:last-child { border-bottom: 0; margin-bottom: 0; }
+.spine { width: 2px; flex: 0 0 2px; background: transparent; }
+.item.unread .spine { background: var(--accent); }
+.body { flex: 1; min-width: 0; }
+.meta { font-family: var(--mono); font-size: 11px; letter-spacing: .01em;
+  color: var(--muted); margin-bottom: .4rem; }
+.meta .also { color: var(--faint); }
+.headline { font-family: var(--serif); font-size: 1.16rem; font-weight: 400;
+  line-height: 1.32; margin: 0 0 .4rem; }
+a.headline { display: block; }
+a.headline:hover { text-decoration: underline; text-decoration-thickness: 1px;
+  text-underline-offset: 3px; }
+.blurb { font-size: .9rem; color: var(--muted); line-height: 1.6; margin: 0; }
+
+/* ---- trials ---- */
+.trial .top { display: flex; align-items: baseline; gap: 1rem; }
+.trial .dist { font-family: var(--mono); font-size: .8rem; white-space: nowrap;
+  color: var(--ink); }
+.trial .dist.far { color: var(--faint); }
+.status-go   { color: var(--go); }
+.status-wait { color: var(--wait); }
+
+/* ---- states ---- */
+.note { font-size: .9rem; color: var(--muted); border-left: 2px solid var(--rule-firm);
+  padding-left: .9rem; margin: 2rem 0; }
+.note code { font-family: var(--mono); font-size: .84em; }
+.note button { appearance: none; background: none; border: 1px solid var(--rule-firm);
+  border-radius: 3px; padding: .25rem .6rem; font: inherit; font-size: .82rem;
+  color: var(--ink); cursor: pointer; margin-top: .6rem; }
+.loading { font-family: var(--mono); font-size: 11px; color: var(--faint); margin: 2rem 0; }
+
+footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+  font-size: .8rem; color: var(--faint); line-height: 1.65; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Tracking</div>
+      <details class="title">
+        <summary aria-label="MGC — show full name">
+          <h1>MGC</h1><span class="chev" aria-hidden="true"></span>
+        </summary>
+        <p class="fullname">Metastatic gastric cancer</p>
+      </details>
+    </div>
+    <div class="synced" id="synced"></div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-news"    aria-selected="true"  aria-controls="panel-news">News</button>
+    <button class="tab" role="tab" id="tab-trials"  aria-selected="false" aria-controls="panel-trials">Trials</button>
+    <button class="tab" role="tab" id="tab-new"     aria-selected="false" aria-controls="panel-new">New trials</button>
+  </div>
+
+  <!-- News -->
+  <section id="panel-news" role="tabpanel" aria-labelledby="tab-news">
+    <div class="controls">
+      <select id="source-filter"><option value="">All sources</option></select>
+      <span class="count" id="news-count"></span>
+    </div>
+    <div id="news-body"><div class="loading">Loading feed…</div></div>
+  </section>
+
+  <!-- Trials -->
+  <section id="panel-trials" role="tabpanel" aria-labelledby="tab-trials" hidden>
+    <div class="controls">
+      <select id="loc-filter">
+        <option value="150">Within 150 miles</option>
+        <option value="400">Within 400 miles</option>
+        <option value="0">Anywhere in the US</option>
+      </select>
+      <select id="status-filter">
+        <option value="RECRUITING">Recruiting</option>
+        <option value="">Recruiting and upcoming</option>
+      </select>
+      <select id="phase-filter">
+        <option value="">All phases</option>
+        <option value="late">Phase 2 and 3</option>
+        <option value="early">Phase 1 and 1/2</option>
+      </select>
+      <span class="count" id="trials-count"></span>
+    </div>
+    <div id="trials-body"><div class="loading">Loading trials…</div></div>
+  </section>
+
+  <!-- New trials -->
+  <section id="panel-new" role="tabpanel" aria-labelledby="tab-new" hidden>
+    <div class="controls">
+      <select id="new-window">
+        <option value="30">Posted in last 30 days</option>
+        <option value="90" selected>Posted in last 90 days</option>
+        <option value="180">Posted in last 180 days</option>
+      </select>
+      <span class="count" id="new-count"></span>
+    </div>
+    <div id="new-body"><div class="loading">Loading trials…</div></div>
+  </section>
+
+  <footer>
+    Trial records come from ClinicalTrials.gov; news comes from the feeds listed in
+    <code>sources.json</code>. Distances are straight-line from Lower Manhattan, not
+    driving distance. Nothing here is medical advice — bring anything that looks
+    relevant to the treating oncology team, who can check eligibility properly.
+  </footer>
+</div>
+
+<script>
+(function () {
+"use strict";
+
+var HOME = { lat: 40.7306, lon: -73.9866 };   // Lower Manhattan — edit to re-centre
+var API  = "https://clinicaltrials.gov/api/v2/studies";
+var MAX_PAGES = 6;
+
+var $ = function (id) { return document.getElementById(id); };
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
+/* ---------------------------------------------------------------- tabs */
+var panels = { news: "panel-news", trials: "panel-trials", "new": "panel-new" };
+Object.keys(panels).forEach(function (key) {
+  $("tab-" + key).addEventListener("click", function () { selectTab(key); });
+});
+function selectTab(active) {
+  Object.keys(panels).forEach(function (key) {
+    $("tab-" + key).setAttribute("aria-selected", String(key === active));
+    $(panels[key]).hidden = key !== active;
+  });
+  if (active !== "news" && !trials.loaded && !trials.loading) loadTrials();
+}
+
+/* ---------------------------------------------------------------- dates */
+function parseDate(value) {
+  if (!value) return null;
+  var d = new Date(value);
+  return isNaN(d.getTime()) ? null : d;
+}
+var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var DAYS   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+function daysAgo(date) {
+  return Math.floor((Date.now() - date.getTime()) / 86400000);
+}
+function shortDate(date) {
+  if (!date) return "Undated";
+  var n = daysAgo(date);
+  if (n <= 0) return "Today";
+  if (n === 1) return "Yesterday";
+  if (n < 7)  return DAYS[date.getDay()];
+  return date.getDate() + " " + MONTHS[date.getMonth()];
+}
+function age(date) {
+  if (!date) return "—";
+  var n = daysAgo(date);
+  if (n < 1)   return "today";
+  if (n < 14)  return n + "d";
+  if (n < 60)  return Math.round(n / 7) + "w";
+  return Math.round(n / 30) + "mo";
+}
+
+/* ---------------------------------------------------------------- news */
+var news = { items: [], updated: null, lastVisit: 0 };
+
+try { news.lastVisit = Number(localStorage.getItem("gw:lastVisit")) || 0; } catch (e) {}
+
+fetch("news.json", { cache: "no-store" })
+  .then(function (r) {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  })
+  .then(function (data) {
+    news.items = data.items || [];
+    news.updated = parseDate(data.updated);
+    if (news.updated) $("synced").textContent = "Synced " + shortDate(news.updated).toLowerCase();
+    buildSourceFilter();
+    renderNews();
+  })
+  .catch(function () {
+    $("news-body").innerHTML =
+      '<div class="note">No feed data loaded yet.<br><br>' +
+      'If you have not run it yet: <code>python fetch_news.py</code> writes ' +
+      '<code>news.json</code> next to this page.<br><br>' +
+      'If that file exists, this page is probably open straight from disk — browsers ' +
+      'block local file reads. Serve the folder instead: ' +
+      '<code>python3 -m http.server</code>, then open ' +
+      '<code>localhost:8000</code>.</div>';
+  });
+
+function buildSourceFilter() {
+  var seen = {};
+  news.items.forEach(function (i) { seen[i.source] = (seen[i.source] || 0) + 1; });
+  Object.keys(seen).sort().forEach(function (name) {
+    var opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name + " (" + seen[name] + ")";
+    $("source-filter").appendChild(opt);
+  });
+  $("source-filter").addEventListener("change", renderNews);
+}
+
+function isUnread(item) {
+  var seen = parseDate(item.first_seen);
+  return seen ? seen.getTime() > news.lastVisit : false;
+}
+
+function renderNews() {
+  var pick = $("source-filter").value;
+  var list = news.items.filter(function (i) { return !pick || i.source === pick; });
+
+  $("news-count").textContent = list.length + (list.length === 1 ? " item" : " items");
+
+  if (!list.length) {
+    $("news-body").innerHTML =
+      '<div class="note">Nothing matched. The feeds are filtered to gastric and ' +
+      'gastroesophageal items, so quiet weeks are normal — widen the keyword list in ' +
+      '<code>sources.json</code> if it stays empty.</div>';
+    return;
+  }
+
+  var buckets = [
+    { label: "This week",   max: 7,        items: [] },
+    { label: "This month",  max: 31,       items: [] },
+    { label: "Earlier",     max: Infinity, items: [] }
+  ];
+  list.forEach(function (item) {
+    var when = parseDate(item.published) || parseDate(item.first_seen);
+    var n = when ? daysAgo(when) : 9999;
+    for (var b = 0; b < buckets.length; b++) {
+      if (n < buckets[b].max) { buckets[b].items.push(item); break; }
+    }
+  });
+
+  var unread = list.filter(isUnread).length;
+  var html = "";
+
+  buckets.forEach(function (bucket, index) {
+    if (!bucket.items.length) return;
+    html += '<div class="daterule"><span>' + bucket.label + "</span>" +
+            '<span class="line"></span>';
+    if (index === 0 && unread) {
+      html += '<span class="new">' + unread + " new</span>" +
+              '<button class="markread" id="markread">Mark read</button>';
+    }
+    html += "</div>";
+    bucket.items.forEach(function (item) { html += newsItem(item); });
+  });
+
+  $("news-body").innerHTML = html;
+
+  var button = $("markread");
+  if (button) button.addEventListener("click", function () {
+    news.lastVisit = Date.now();
+    try { localStorage.setItem("gw:lastVisit", String(news.lastVisit)); } catch (e) {}
+    renderNews();
+  });
+}
+
+function newsItem(item) {
+  var when = parseDate(item.published) || parseDate(item.first_seen);
+  var meta = esc(item.source) + " &nbsp;·&nbsp; " + esc(shortDate(when));
+  if (item.also_in && item.also_in.length) {
+    meta += ' <span class="also">&nbsp;·&nbsp; also in ' + esc(item.also_in.join(", ")) + "</span>";
+  }
+  return '<article class="item' + (isUnread(item) ? " unread" : "") + '">' +
+           '<div class="spine"></div><div class="body">' +
+             '<div class="meta">' + meta + "</div>" +
+             '<a class="headline" href="' + esc(item.url) + '" target="_blank" rel="noopener">' +
+               esc(item.title) + "</a>" +
+             (item.blurb ? '<p class="blurb">' + esc(item.blurb) + "</p>" : "") +
+           "</div></article>";
+}
+
+/* ---------------------------------------------------------------- trials */
+var trials = { all: [], loaded: false, loading: false };
+
+function miles(lat, lon) {
+  var toRad = Math.PI / 180;
+  var dLat = (lat - HOME.lat) * toRad;
+  var dLon = (lon - HOME.lon) * toRad;
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(HOME.lat * toRad) * Math.cos(lat * toRad) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return 3958.8 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function phaseLabel(phases) {
+  if (!phases || !phases.length) return "Phase not stated";
+  var numbers = phases
+    .map(function (p) { return String(p).replace("PHASE", ""); })
+    .filter(function (p) { return /^\d$/.test(p); });
+  if (!numbers.length) {
+    return phases.indexOf("NA") > -1 ? "Not a phase trial" : "Phase not stated";
+  }
+  return "Phase " + numbers.join("/");
+}
+
+function statusLabel(raw) {
+  var text = String(raw || "").toLowerCase().replace(/_/g, " ");
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function shape(study) {
+  var p    = study.protocolSection || {};
+  var id   = p.identificationModule || {};
+  var st   = p.statusModule || {};
+  var des  = p.designModule || {};
+  var spon = (p.sponsorCollaboratorsModule || {}).leadSponsor || {};
+  var locs = (p.contactsLocationsModule || {}).locations || [];
+
+  var nearest = null;
+  var usSites = 0;
+  locs.forEach(function (loc) {
+    if (loc.country && loc.country !== "United States") return;
+    usSites++;
+    var g = loc.geoPoint;
+    if (!g || typeof g.lat !== "number" || typeof g.lon !== "number") return;
+    var d = miles(g.lat, g.lon);
+    if (!nearest || d < nearest.distance) {
+      nearest = { distance: d, city: loc.city, state: loc.state, facility: loc.facility };
+    }
+  });
+
+  return {
+    nct:      id.nctId,
+    title:    id.officialTitle || id.briefTitle || "Untitled study",
+    status:   st.overallStatus,
+    updated:  parseDate((st.lastUpdatePostDateStruct || {}).date),
+    posted:   parseDate((st.studyFirstPostDateStruct || {}).date),
+    phases:   des.phases || [],
+    sponsor:  spon.name || "Sponsor not stated",
+    nearest:  nearest,
+    usSites:  usSites,
+    sites:    locs.length
+  };
+}
+
+function loadTrials() {
+  trials.loading = true;
+  var collected = [];
+
+  function page(token, depth) {
+    var params = new URLSearchParams();
+    params.set("query.cond",
+      "gastric cancer OR stomach cancer OR gastroesophageal junction adenocarcinoma " +
+      "OR esophagogastric adenocarcinoma");
+    params.set("query.term", "metastatic OR advanced OR unresectable OR metastasis");
+    params.set("fields", [
+      "protocolSection.identificationModule",
+      "protocolSection.statusModule",
+      "protocolSection.designModule",
+      "protocolSection.sponsorCollaboratorsModule",
+      "protocolSection.contactsLocationsModule"
+    ].join(","));
+    params.set("pageSize", "200");
+    if (token) params.set("pageToken", token);
+
+    return fetch(API + "?" + params.toString())
+      .then(function (r) {
+        if (!r.ok) throw new Error("ClinicalTrials.gov returned HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        collected = collected.concat((data.studies || []).map(shape));
+        if (data.nextPageToken && depth < MAX_PAGES) {
+          return page(data.nextPageToken, depth + 1);
+        }
+      });
+  }
+
+  page(null, 1)
+    .then(function () {
+      trials.all = collected.filter(function (t) { return t.nct; });
+      trials.loaded = true;
+      trials.loading = false;
+      renderTrials();
+      renderNewTrials();
+    })
+    .catch(function (err) {
+      trials.loading = false;
+      var message =
+        '<div class="note">Could not reach ClinicalTrials.gov.<br><br>' +
+        esc(err.message) +
+        '<br><button id="retry">Try again</button></div>';
+      $("trials-body").innerHTML = message;
+      $("new-body").innerHTML = message.replace('id="retry"', 'id="retry2"');
+      ["retry", "retry2"].forEach(function (id) {
+        var b = $(id);
+        if (b) b.addEventListener("click", function () {
+          $("trials-body").innerHTML = '<div class="loading">Loading trials…</div>';
+          $("new-body").innerHTML = '<div class="loading">Loading trials…</div>';
+          loadTrials();
+        });
+      });
+    });
+}
+
+["loc-filter", "status-filter", "phase-filter"].forEach(function (id) {
+  $(id).addEventListener("change", renderTrials);
+});
+$("new-window").addEventListener("change", renderNewTrials);
+
+function renderTrials() {
+  if (!trials.loaded) return;
+
+  var radius = Number($("loc-filter").value);
+  var status = $("status-filter").value;
+  var phase  = $("phase-filter").value;
+
+  var list = trials.all.filter(function (t) {
+    if (status && t.status !== status) return false;
+    if (!status && t.status !== "RECRUITING" && t.status !== "NOT_YET_RECRUITING") return false;
+    if (radius) {
+      if (!t.nearest || t.nearest.distance > radius) return false;
+    } else if (!t.usSites) {
+      return false;
+    }
+    if (phase === "late"  && !t.phases.some(function (p) { return p === "PHASE2" || p === "PHASE3"; })) return false;
+    if (phase === "early" && !t.phases.some(function (p) { return p === "PHASE1"; })) return false;
+    return true;
+  });
+
+  list.sort(function (a, b) {
+    var da = a.nearest ? a.nearest.distance : Infinity;
+    var db = b.nearest ? b.nearest.distance : Infinity;
+    return da - db;
+  });
+
+  $("trials-count").textContent = list.length + (list.length === 1 ? " trial" : " trials");
+
+  if (!list.length) {
+    $("trials-body").innerHTML =
+      '<div class="note">No trials match these filters. Widening the distance is ' +
+      'usually what opens things up — a lot of gastric trials run out of a handful ' +
+      'of centres.</div>';
+    return;
+  }
+
+  $("trials-body").innerHTML = list.map(function (t) { return trialItem(t); }).join("");
+}
+
+function renderNewTrials() {
+  if (!trials.loaded) return;
+  var days = Number($("new-window").value);
+  var cutoff = Date.now() - days * 86400000;
+
+  var list = trials.all.filter(function (t) {
+    return t.posted && t.posted.getTime() >= cutoff && t.usSites > 0;
+  });
+  list.sort(function (a, b) { return b.posted - a.posted; });
+
+  $("new-count").textContent = list.length + (list.length === 1 ? " trial" : " trials");
+
+  if (!list.length) {
+    $("new-body").innerHTML =
+      '<div class="note">No US trials first posted in this window. Try a longer one.</div>';
+    return;
+  }
+
+  $("new-body").innerHTML = list.map(function (t) { return trialItem(t, true); }).join("");
+}
+
+function trialItem(t, showPosted) {
+  var distance = "—", far = "";
+  if (t.nearest) {
+    var d = t.nearest.distance;
+    distance = (d < 10 ? d.toFixed(1) : Math.round(d)) + " mi";
+    if (d > 150) far = " far";
+  }
+
+  var statusClass = t.status === "RECRUITING" ? "status-go" : "status-wait";
+  var meta = '<span class="' + statusClass + '">' + esc(statusLabel(t.status)) + "</span>" +
+             " &nbsp;·&nbsp; " + esc(phaseLabel(t.phases)) +
+             " &nbsp;·&nbsp; " + esc(t.nct) +
+             " &nbsp;·&nbsp; " + (showPosted
+               ? "Posted " + esc(age(t.posted))
+               : "Updated " + esc(age(t.updated)));
+
+  var where = "Site locations not listed";
+  if (t.nearest) {
+    var city = [t.nearest.city, t.nearest.state].filter(Boolean).join(", ");
+    var others = t.sites - 1;
+    where = esc(city || t.nearest.facility || "Location listed") +
+            (others > 0 ? " &nbsp;·&nbsp; plus " + others + " other site" + (others === 1 ? "" : "s") : "");
+  }
+
+  return '<article class="item trial"><div class="spine"></div><div class="body">' +
+           '<div class="top">' +
+             '<a class="headline" href="https://clinicaltrials.gov/study/' + esc(t.nct) +
+               '" target="_blank" rel="noopener">' + esc(t.title) + "</a>" +
+             '<span class="dist' + far + '">' + esc(distance) + "</span>" +
+           "</div>" +
+           '<div class="meta">' + meta + "</div>" +
+           '<p class="blurb">' + esc(t.sponsor) + " &nbsp;·&nbsp; " + where + "</p>" +
+         "</div></article>";
+}
+
+})();
+</script>
+</body>
+</html>

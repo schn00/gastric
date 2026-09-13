@@ -1,0 +1,74 @@
+{
+  "retention_days": 180,
+  "max_items": 400,
+  "fetch_meta_description": true,
+  "keywords": [
+    "gastric",
+    "stomach cancer",
+    "gastroesophageal",
+    "gastro-esophageal",
+    "gastresophageal",
+    "esophagogastric",
+    "oesophagogastric",
+    "GEJ",
+    "G/GEJ",
+    "signet ring",
+    "linitis plastica",
+    "CLDN18",
+    "claudin 18",
+    "claudin-18",
+    "zolbetuximab",
+    "trastuzumab deruxtecan",
+    "zanidatamab",
+    "ramucirumab",
+    "FLOT",
+    "peritoneal carcinomatosis"
+  ],
+  "feeds": [
+    {
+      "name": "FDA",
+      "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml",
+      "enabled": true
+    },
+    {
+      "name": "FDA drug safety",
+      "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medwatch/rss.xml",
+      "enabled": false
+    },
+    {
+      "name": "NCI",
+      "url": "https://www.cancer.gov/publishedcontent/rss/syndication/rss/ncinewsreleases.rss",
+      "enabled": true
+    },
+    {
+      "name": "NCI Cancer Currents",
+      "url": "https://www.cancer.gov/publishedcontent/rss/news-events/cancer-currents-blog.rss",
+      "enabled": true
+    },
+    {
+      "name": "OncLive",
+      "url": "https://www.onclive.com/rss/news",
+      "enabled": true
+    },
+    {
+      "name": "Medscape Oncology",
+      "url": "https://www.medscape.com/cx/rssfeeds/2700.xml",
+      "enabled": true
+    },
+    {
+      "name": "ASCO Post",
+      "url": "https://ascopost.com/rss/",
+      "enabled": true
+    },
+    {
+      "name": "Targeted Oncology",
+      "url": "https://www.targetedonc.com/rss/news",
+      "enabled": true
+    },
+    {
+      "name": "Healio Gastrointestinal",
+      "url": "https://www.healio.com/rss/hematology-oncology",
+      "enabled": true
+    }
+  ]
+}
