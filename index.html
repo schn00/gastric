@@ -28,7 +28,6 @@
   --go-bg:      #dfe6d4;
   --wait:       #7a5715;
   --wait-bg:    #f7e5c3;
-  --dingbat:    #cbbb9c;
   --serif: "Newsreader", Georgia, serif;
   --sans:  "Inter", system-ui, -apple-system, sans-serif;
   --mono:  "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -41,7 +40,6 @@
     --chip-bg: #201d17; --chip-ink: #a89c86;
     --go: #95bb82; --go-bg: #1e2a19;
     --wait: #d8a961; --wait-bg: #2b2110;
-    --dingbat: #3d3730;
   }
 }
 :root[data-theme="dark"] {
@@ -51,7 +49,6 @@
     --chip-bg: #201d17; --chip-ink: #a89c86;
     --go: #95bb82; --go-bg: #1e2a19;
     --wait: #d8a961; --wait-bg: #2b2110;
-    --dingbat: #3d3730;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -132,19 +129,14 @@ select {
   text-decoration: underline; text-underline-offset: 3px; }
 .markread:hover { color: var(--ink); }
 
-/* section ornament between date groups */
-.dingbat { text-align: center; padding: .45rem 0 .2rem; }
-.dingbat span { display: inline-block; font-family: var(--serif); font-size: 1.15rem;
-  letter-spacing: .55em; text-indent: .55em; color: var(--dingbat);
-  transform: translateY(-.12em); }
-
 /* ---- items ---- */
 .item { display: flex; gap: .8rem; padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--rule); margin-bottom: 1.25rem; }
 .item:last-child { border-bottom: 0; margin-bottom: 0; }
-.dot { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%;
-  background: transparent; margin-top: .55rem; }
-.item.unread .dot { background: var(--signal); }
+.dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%;
+  background: transparent; border: 1.5px solid var(--rule-firm);
+  margin-top: .5rem; }
+.item.unread .dot { background: var(--signal); border-color: var(--signal); }
 .trial .dot { display: none; }
 .body { flex: 1; min-width: 0; }
 .meta { font-size: .72rem; color: var(--faint); margin-bottom: .4rem;
@@ -442,11 +434,8 @@ function renderNews() {
   var unread = list.filter(isUnread).length;
   var html = "";
 
-  var shown = 0;
   buckets.forEach(function (bucket, index) {
     if (!bucket.items.length) return;
-    if (shown) html += '<div class="dingbat" aria-hidden="true"><span>* * *</span></div>';
-    shown++;
     html += '<div class="daterule"><span class="mark">' + bucket.label + "</span>";
     if (index === 0 && unread) {
       html += '<span class="new">' + unread + " new</span>" +
