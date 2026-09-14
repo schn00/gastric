@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-14T10:15:26.461285+00:00",
+ "updated": "2026-09-14T16:15:46.337193+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -54,6 +54,15 @@
    "blurb": "FDA approves Jazz’s Ziihera in frontline gastric cancer Endpoints News",
    "relax_title_rule": true,
    "first_seen": "2026-09-13T03:53:04.759125+00:00"
+  },
+  {
+   "title": "Jazz's HER2 bispecific Ziihera gains FDA approval to change practice in stomach cancer",
+   "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQY0RnaEoxMGMwXzBRX1FjZVA0NTFBSS1xUk85Y2JkN3UtV0lENkV3Y1BmOWlXS003S2I1U3JialU2dV9rdzFCdFVzUjhQQ3BjWWFGTkFNQU9nQU11WEs0NG93eGNpaUlzLTdQRS1hNTU2eE1MTUZNQTA4Z2NCYndVZHF1TW13Z2tRZHJSb1dYd2dCNHY4WDdNTVZZaHFoal9MaldQSWFRYm5haU5VV090b3paUFA?oc=5",
+   "source": "Fierce Pharma",
+   "published": "2026-08-25T07:00:00+00:00",
+   "blurb": "Jazz's HER2 bispecific Ziihera gains FDA approval to change practice in stomach cancer Fierce Pharma",
+   "relax_title_rule": true,
+   "first_seen": "2026-09-14T16:15:46.335630+00:00"
   },
   {
    "title": "Astellas Doses First Patient in Phase 3 Study of ASP2138 in CLDN18.2-postive and HER2-negative locally advanced unresectable or metastatic gastric or gastroesophageal junction (GEJ) adenocarcinoma",
@@ -184,7 +193,10 @@
    "published": "2026-05-14T07:00:00+00:00",
    "blurb": "New stomach cancer drug approved for NHS use in ‘first major advance’ in treatment in a decade independent.co.uk",
    "relax_title_rule": true,
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "The Independent"
+   ]
   },
   {
    "title": "Addition of Toripalimab to Perioperative Chemotherapy in Locally Advanced Gastric or Gastroesophageal Junction Cancer",
