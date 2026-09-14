@@ -8,50 +8,50 @@
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="icon" href="icons/favicon.ico" sizes="any">
 <meta name="apple-mobile-web-app-title" content="MGC">
-<meta name="theme-color" id="theme-color" content="#f3f6f5">
+<meta name="theme-color" id="theme-color" content="#faf5ec">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper:      #f3f6f5;
-  --ink:        #232a33;
-  --muted:      #5b6664;
-  --faint:      #8d9a98;
-  --rule:       #e5ecea;
-  --rule-firm:  #cad5d2;
-  --accent:     #256f61;   /* teal — wordmark and section rules */
-  --signal:     #c99418;   /* amber — unread dot, new count, read ring */
-  --chip-bg:    #e3eae8;
-  --chip-ink:   #4d5a57;
-  --chip-line:  #c5d1ce;
-  --go:         #256b47;
-  --go-bg:      #dcece2;
-  --go-line:    #b4d2c1;
-  --wait:       #8a6410;
-  --wait-bg:    #f4e8cd;
-  --wait-line:  #ddc79a;
+  --paper:      #faf5ec;
+  --ink:        #2b2419;
+  --muted:      #665c4b;
+  --faint:      #a3947b;
+  --rule:       #ebe1cd;
+  --rule-firm:  #ddd0b6;
+  --accent:     #9c5636;   /* clay — wordmark and section rules */
+  --signal:     #b3830f;   /* amber — unread dot, new count, read ring */
+  --chip-bg:    #e6e3d5;
+  --chip-ink:   #585040;
+  --chip-line:  #d5cfbb;
+  --go:         #3d5b30;
+  --go-bg:      #dfe6d4;
+  --go-line:    #c3d2b5;
+  --wait:       #7a5715;
+  --wait-bg:    #f7e5c3;
+  --wait-line:  #e3cd9e;
   --serif: "Newsreader", Georgia, serif;
   --sans:  "Inter", system-ui, -apple-system, sans-serif;
   --mono:  "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #232a33; --ink: #e6ecec; --muted: #9aa6ad; --faint: #78848d;
-    --rule: #2e3740; --rule-firm: #3c4650;
-    --accent: #7fd4c1; --signal: #f5c14e;
-    --chip-bg: #2c353f; --chip-ink: #a5b1ba; --chip-line: #46515c;
-    --go: #7fd4a0; --go-bg: #1f3329; --go-line: #3c5f4a;
-    --wait: #f0bd6a; --wait-bg: #33291a; --wait-line: #57472a;
+    --paper: #141413; --ink: #e9e7e2; --muted: #a49a87; --faint: #7a7160;
+    --rule: #242320; --rule-firm: #36322b;
+    --accent: #cf7c53; --signal: #f5c14e;
+    --chip-bg: #201d17; --chip-ink: #a89c86; --chip-line: #34302a;
+    --go: #95bb82; --go-bg: #1e2a19; --go-line: #33452c;
+    --wait: #d8a961; --wait-bg: #2b2110; --wait-line: #473719;
   }
 }
 :root[data-theme="dark"] {
-    --paper: #232a33; --ink: #e6ecec; --muted: #9aa6ad; --faint: #78848d;
-    --rule: #2e3740; --rule-firm: #3c4650;
-    --accent: #7fd4c1; --signal: #f5c14e;
-    --chip-bg: #2c353f; --chip-ink: #a5b1ba; --chip-line: #46515c;
-    --go: #7fd4a0; --go-bg: #1f3329; --go-line: #3c5f4a;
-    --wait: #f0bd6a; --wait-bg: #33291a; --wait-line: #57472a;
+    --paper: #141413; --ink: #e9e7e2; --muted: #a49a87; --faint: #7a7160;
+    --rule: #242320; --rule-firm: #36322b;
+    --accent: #cf7c53; --signal: #f5c14e;
+    --chip-bg: #201d17; --chip-ink: #a89c86; --chip-line: #34302a;
+    --go: #95bb82; --go-bg: #1e2a19; --go-line: #33452c;
+    --wait: #d8a961; --wait-bg: #2b2110; --wait-line: #473719;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -284,7 +284,7 @@ var $ = function (id) { return document.getElementById(id); };
   }
   function isDark() {
     var choice = stored();
-    if (choice) return choice === "dark";
+    if (choice === "dark" || choice === "light") return choice === "dark";
     return query ? query.matches : false;
   }
   function paint() {
@@ -295,7 +295,7 @@ var $ = function (id) { return document.getElementById(id); };
       button.title = button.getAttribute("aria-label");
     }
     var meta = $("theme-color");
-    if (meta) meta.setAttribute("content", dark ? "#232a33" : "#f3f6f5");
+    if (meta) meta.setAttribute("content", dark ? "#141413" : "#faf5ec");
   }
 
   var choice = stored();
