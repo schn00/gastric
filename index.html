@@ -8,8 +8,7 @@
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="icon" href="icons/favicon.ico" sizes="any">
 <meta name="apple-mobile-web-app-title" content="MGC">
-<meta name="theme-color" content="#faf5ec" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="theme-color" content="#faf5ec">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,9 +20,8 @@
   --faint:      #a3947b;
   --rule:       #ebe1cd;
   --rule-firm:  #ddd0b6;
-  --accent:     #9c5636;   /* clay — wordmark, headings, marker */
+  --accent:     #9c5636;   /* clay — wordmark and section rules */
   --signal:     #c2542f;   /* coral — unread dot and new count only */
-  --marker:     #eddcbf;
   --chip-bg:    #e6e3d5;
   --chip-ink:   #585040;
   --go:         #3d5b30;
@@ -36,15 +34,24 @@
   --mono:  "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #141413; --ink: #e9e7e2; --muted: #a49a87; --faint: #7a7160;
     --rule: #242320; --rule-firm: #36322b;
-    --accent: #cf7c53; --signal: #e88b62; --marker: #4e3620;
+    --accent: #cf7c53; --signal: #e88b62;
     --chip-bg: #201d17; --chip-ink: #a89c86;
     --go: #95bb82; --go-bg: #1e2a19;
     --wait: #d8a961; --wait-bg: #2b2110;
     --dingbat: #3d3730;
   }
+}
+:root[data-theme="dark"] {
+    --paper: #141413; --ink: #e9e7e2; --muted: #a49a87; --faint: #7a7160;
+    --rule: #242320; --rule-firm: #36322b;
+    --accent: #cf7c53; --signal: #e88b62;
+    --chip-bg: #201d17; --chip-ink: #a89c86;
+    --go: #95bb82; --go-bg: #1e2a19;
+    --wait: #d8a961; --wait-bg: #2b2110;
+    --dingbat: #3d3730;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -69,6 +76,12 @@ h1 { font-family: var(--serif); font-size: 1.75rem; font-weight: 400;
   line-height: 1.15; margin: 0; letter-spacing: .01em; color: var(--accent); }
 .synced { font-family: var(--serif); font-style: italic; font-size: .8rem;
   color: var(--faint); }
+.mast-right { display: flex; align-items: center; gap: .75rem; }
+.themetoggle { appearance: none; background: none; border: 0; padding: .2rem;
+  margin: -.2rem; line-height: 0; color: var(--faint); cursor: pointer;
+  border-radius: 4px; }
+.themetoggle:hover { color: var(--accent); }
+.themetoggle svg { width: 17px; height: 17px; display: block; }
 
 /* collapsible title */
 details.title > summary { list-style: none; cursor: pointer; display: flex;
@@ -108,11 +121,11 @@ select {
 
 /* ---- date rules ---- */
 .daterule { display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap;
-  margin: 2.1rem 0 1.1rem; }
+  margin: 2.1rem 0 1.1rem; padding-bottom: .4rem;
+  border-bottom: 1.5px solid var(--accent); }
 .daterule:first-child { margin-top: 0; }
 .mark { font-family: var(--serif); font-style: italic; font-size: 1.2rem;
-  color: var(--ink);
-  background: linear-gradient(transparent 62%, var(--marker) 62%); }
+  color: var(--ink); }
 .daterule .new { font-size: .72rem; color: var(--signal); }
 .markread { appearance: none; background: none; border: 0; padding: 0; font: inherit;
   font-size: .72rem; color: var(--faint); cursor: pointer; margin-left: auto;
@@ -120,9 +133,10 @@ select {
 .markread:hover { color: var(--ink); }
 
 /* section ornament between date groups */
-.dingbat { text-align: center; font-family: var(--serif); font-size: .95rem;
-  letter-spacing: .65em; color: var(--dingbat); padding: .35rem 0 .1rem;
-  text-indent: .65em; }
+.dingbat { text-align: center; padding: .45rem 0 .2rem; }
+.dingbat span { display: inline-block; font-family: var(--serif); font-size: 1.15rem;
+  letter-spacing: .55em; text-indent: .55em; color: var(--dingbat);
+  transform: translateY(-.12em); }
 
 /* ---- items ---- */
 .item { display: flex; gap: .8rem; padding-bottom: 1.25rem;
@@ -181,7 +195,10 @@ footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
         <p class="fullname">Metastatic gastric cancer</p>
       </details>
     </div>
-    <div class="synced" id="synced"></div>
+    <div class="mast-right">
+      <div class="synced" id="synced"></div>
+      <button class="themetoggle" id="theme-toggle" type="button" aria-label="Switch theme"></button>
+    </div>
   </header>
 
   <div class="tabs" role="tablist">
@@ -251,6 +268,56 @@ var API  = "https://clinicaltrials.gov/api/v2/studies";
 var MAX_PAGES = 6;
 
 var $ = function (id) { return document.getElementById(id); };
+
+/* ---------------------------------------------------------------- theme */
+(function theme() {
+  var KEY = "gw:theme";
+  var root = document.documentElement;
+  var button = $("theme-toggle");
+  var query = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+
+  var SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.7" stroke-linecap="round" aria-hidden="true">' +
+    '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.3M12 19.3v2.3M4.2 4.2l1.7 1.7' +
+    'M18.1 18.1l1.7 1.7M2.4 12h2.3M19.3 12h2.3M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg>';
+
+  function stored() {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+  }
+  function isDark() {
+    var choice = stored();
+    if (choice) return choice === "dark";
+    return query ? query.matches : false;
+  }
+  function paint() {
+    var dark = isDark();
+    if (button) {
+      button.innerHTML = dark ? SUN : MOON;
+      button.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+      button.title = button.getAttribute("aria-label");
+    }
+    var meta = $("theme-color");
+    if (meta) meta.setAttribute("content", dark ? "#141413" : "#faf5ec");
+  }
+
+  var choice = stored();
+  if (choice === "dark" || choice === "light") root.setAttribute("data-theme", choice);
+  paint();
+
+  if (button) button.addEventListener("click", function () {
+    var next = isDark() ? "light" : "dark";
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    root.setAttribute("data-theme", next);
+    paint();
+  });
+
+  if (query && query.addEventListener) {
+    query.addEventListener("change", function () { if (!stored()) paint(); });
+  }
+})();
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -378,7 +445,7 @@ function renderNews() {
   var shown = 0;
   buckets.forEach(function (bucket, index) {
     if (!bucket.items.length) return;
-    if (shown) html += '<div class="dingbat" aria-hidden="true">\u2733 \u2733 \u2733</div>';
+    if (shown) html += '<div class="dingbat" aria-hidden="true"><span>* * *</span></div>';
     shown++;
     html += '<div class="daterule"><span class="mark">' + bucket.label + "</span>";
     if (index === 0 && unread) {
