@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-14T16:15:46.337193+00:00",
+ "updated": "2026-09-14T22:15:19.986935+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -18,7 +18,10 @@
    "source": "BioSpace",
    "published": "2026-08-26T07:00:00+00:00",
    "blurb": "Jazz scores front-line gastric cancer nod from FDA for ‘practice-changing’ Ziihera BioSpace",
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "biospace.com"
+   ]
   },
   {
    "title": "Astellas Pharma (TSE:4503) Doses First Patient In Phase 3 Gastric Cancer Trial",
@@ -127,7 +130,10 @@
    "published": "2026-07-06T07:00:00+00:00",
    "blurb": "Savolitinib Gains NMPA Approval for MET-Amplified Gastric and GEJ Adenocarcinoma OncLive",
    "relax_title_rule": true,
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "onclive.com"
+   ]
   },
   {
    "title": "June’s GI Rewind: CRC, Gastric Cancer See Several “Firsts” With FDA Review of Adjuvant IO, Global Approval of BRAF-Targeted and CAR T-Cell Therapies",
