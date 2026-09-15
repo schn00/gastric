@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-14T22:15:19.986935+00:00",
+ "updated": "2026-09-15T10:15:26.021703+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -101,7 +101,10 @@
    "source": "Cure Today",
    "published": "2026-07-29T07:00:00+00:00",
    "blurb": "Sonesitatug Vedotin Extends Survival in Advanced Gastric Cancer Cure Today",
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "curetoday.com"
+   ]
   },
   {
    "title": "Sonesitatug vedotin demonstrated a statistically significant and highly clinically meaningful improvement in overall survival in 2nd and later-line CLDN18.2-positive advanced gastric/GEJ cancers",
@@ -121,7 +124,10 @@
    "published": "2026-07-07T07:00:00+00:00",
    "blurb": "ABL Bio targets December phase 3 start for ABL111 in gastric cancer Korea Biomedical Review",
    "relax_title_rule": true,
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "koreabiomed.com"
+   ]
   },
   {
    "title": "Savolitinib Gains NMPA Approval for MET-Amplified Gastric and GEJ Adenocarcinoma",
@@ -314,7 +320,10 @@
    "published": "2026-03-24T07:00:00+00:00",
    "blurb": "AstraZeneca’s Imfinzi wins Korea approval for perioperative gastric cancer treatment Korea Biomedical Review",
    "relax_title_rule": true,
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "koreabiomed.com"
+   ]
   }
  ]
 }
