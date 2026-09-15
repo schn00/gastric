@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-15T16:15:38.094435+00:00",
+ "updated": "2026-09-15T22:14:36.948367+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -175,7 +175,10 @@
    "source": "onclive.com",
    "published": "2026-06-22T07:00:00+00:00",
    "blurb": "China’s NMPA Approves First CAR T-Cell Therapy for CLDN18.-2+, HER2– Advanced Gastric/GEJ Adenocarcinoma onclive.com",
-   "first_seen": "2026-09-15T16:15:38.093526+00:00"
+   "first_seen": "2026-09-15T16:15:38.093526+00:00",
+   "also_in": [
+    "OncLive"
+   ]
   },
   {
    "title": "Locally advanced gastric cancer: Adding neoadjuvant radiotherapy to perioperative XELOX improves DFS and OS",
