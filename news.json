@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-16T16:15:32.388166+00:00",
+ "updated": "2026-09-16T22:14:40.365082+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -253,7 +253,10 @@
    "source": "Oncodaily",
    "published": "2026-05-09T07:00:00+00:00",
    "blurb": "NEOSUMMIT-01 Trial: Perioperative Toripalimab in Locally Advanced Gastric or Gastroesophageal Junction Cancer Oncodaily",
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "oncodaily.com"
+   ]
   },
   {
    "title": "FDA Accepts Application for Ziihera Combinations in HER2-Positive Gastroesophageal Cancer",
@@ -277,6 +280,14 @@
    ]
   },
   {
+   "title": "FDA Grants Priority Review to Zanidatamab Combos in HER2+ Gastroesophageal Adenocarcinoma",
+   "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPWUp4OU1NZTY3V0NWeEY4cnFsa0pOcjRBSnVMdDN4VHpCQUdHVWdQRlNnWkJkcXBQV3oxYWxVaTNfNUN6NE9IVkhBeDJtM3dwNURuN3hENWJGQW5MbTk0TDZCMWJqQUh5YVItZloxZl8zOW80aDhQREdTcmtUWUgzU1k0SHBMS0FKT0RWVlVHTmxyaGQteEE3UDdKNGllNDRDcklENVI5UFZDVHFZb0FPdEJNYlhBNFNnRTNOWmlR?oc=5",
+   "source": "Targeted Oncology",
+   "published": "2026-04-27T07:00:00+00:00",
+   "blurb": "FDA Grants Priority Review to Zanidatamab Combos in HER2+ Gastroesophageal Adenocarcinoma Targeted Oncology",
+   "first_seen": "2026-09-16T22:14:40.363846+00:00"
+  },
+  {
    "title": "Real-world survival benefit of chemotherapy in elderly patients with advanced gastric cancer: a population-based SEER analysis",
    "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9mNkNoZGNTMjV5ZER2YzgzdmRtTGdUMk9IdzBiWG1CRmZ6czl6SE1VcVZ3WEktNjdiOU5lMEpoVTNpSjE1ZmtId3hIdzlvcTN3S3RDeFZSLWs1UDI3Y184?oc=5",
    "source": "Nature",
@@ -293,7 +304,10 @@
    "source": "Oncodaily",
    "published": "2026-04-25T07:00:00+00:00",
    "blurb": "Top Phase 3 Gastroesophageal Cancer Trials to Watch at ASCO 2026 Oncodaily",
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "oncodaily.com"
+   ]
   },
   {
    "title": "24 y/o diagnosed with advanced stomach cancer finds solace in making art",
@@ -301,7 +315,10 @@
    "source": "thestandard.com.hk",
    "published": "2026-04-23T07:00:00+00:00",
    "blurb": "24 y/o diagnosed with advanced stomach cancer finds solace in making art thestandard.com.hk",
-   "first_seen": "2026-09-16T10:16:20.104940+00:00"
+   "first_seen": "2026-09-16T10:16:20.104940+00:00",
+   "also_in": [
+    "The Standard (HK)"
+   ]
   },
   {
    "title": "Case 1: Locally Advanced GEJ Adenocarcinoma",
