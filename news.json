@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-16T10:16:20.106126+00:00",
+ "updated": "2026-09-16T16:15:32.388166+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -157,7 +157,10 @@
    "published": "2026-07-02T07:00:00+00:00",
    "blurb": "June’s GI Rewind: CRC, Gastric Cancer See Several “Firsts” With FDA Review of Adjuvant IO, Global Approval of BRAF-Targeted and CAR T-Cell Therapies OncLive",
    "relax_title_rule": true,
-   "first_seen": "2026-09-13T10:20:02.710494+00:00"
+   "first_seen": "2026-09-13T10:20:02.710494+00:00",
+   "also_in": [
+    "onclive.com"
+   ]
   },
   {
    "title": "Efficacy and safety of infigratinib in patients with refractory advanced gastric or gastroesophageal junction adenocarcinoma harboring FGFR2 gene amplification: a single-arm, multicenter phase 2 trial | British Journal of Cancer",
@@ -204,7 +207,10 @@
    "published": "2026-06-17T07:00:00+00:00",
    "blurb": "Givastomig Earns FDA Fast Track Designation in HER2-Negative Gastric Cancer CancerNetwork",
    "relax_title_rule": true,
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "cancernetwork.com"
+   ]
   },
   {
    "title": "ABL Bio secures FDA Fast Track for gastric cancer therapy",
