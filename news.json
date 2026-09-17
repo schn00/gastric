@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-17T16:16:26.660157+00:00",
+ "updated": "2026-09-17T22:14:34.001793+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -65,7 +65,10 @@
    "published": "2026-08-25T07:00:00+00:00",
    "blurb": "Jazz's HER2 bispecific Ziihera gains FDA approval to change practice in stomach cancer Fierce Pharma",
    "relax_title_rule": true,
-   "first_seen": "2026-09-14T16:15:46.335630+00:00"
+   "first_seen": "2026-09-14T16:15:46.335630+00:00",
+   "also_in": [
+    "fiercepharma.com"
+   ]
   },
   {
    "title": "FDA Approves Ziihera Combinations for First-Line Treatment of HER2-Positive Gastroesophageal Cancer",
@@ -110,7 +113,10 @@
    "source": "manilatimes.net",
    "published": "2026-08-05T07:00:00+00:00",
    "blurb": "Shanghai SinoUnited Hospital Announced Availability of World's First CAR-T Therapy for Solid Tumors in Advanced Gastric Cancer manilatimes.net",
-   "first_seen": "2026-09-17T10:15:31.096264+00:00"
+   "first_seen": "2026-09-17T10:15:31.096264+00:00",
+   "also_in": [
+    "The Manila Times"
+   ]
   },
   {
    "title": "Sonesitatug Vedotin Extends Survival in Advanced Gastric Cancer",
