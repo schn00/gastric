@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-19T10:14:04.207274+00:00",
+ "updated": "2026-09-19T16:14:32.522180+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -279,7 +279,10 @@
    "published": "2026-04-27T07:00:00+00:00",
    "blurb": "FDA Accepts Application for Ziihera Combinations in HER2-Positive Gastroesophageal Cancer Cure Today",
    "relax_title_rule": true,
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "curetoday.com"
+   ]
   },
   {
    "title": "FDA Accepts sBLA for Zanidatamab Combinations in First-Line HER2-Positive Gastroesophageal Adenocarcinoma",
