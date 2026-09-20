@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-20T10:13:51.575276+00:00",
+ "updated": "2026-09-20T16:14:45.014592+00:00",
  "items": [
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -221,7 +221,10 @@
    "source": "Vera Health",
    "published": "2026-06-22T05:29:44+00:00",
    "blurb": "Locally advanced gastric cancer: Adding neoadjuvant radiotherapy to perioperative XELOX improves DFS and OS Vera Health",
-   "first_seen": "2026-09-13T03:53:04.759125+00:00"
+   "first_seen": "2026-09-13T03:53:04.759125+00:00",
+   "also_in": [
+    "verahealth.ai"
+   ]
   },
   {
    "title": "Givastomig Earns FDA Fast Track Designation in HER2-Negative Gastric Cancer",
@@ -319,7 +322,10 @@
    "source": "Targeted Oncology",
    "published": "2026-04-27T07:00:00+00:00",
    "blurb": "FDA Grants Priority Review to Zanidatamab Combos in HER2+ Gastroesophageal Adenocarcinoma Targeted Oncology",
-   "first_seen": "2026-09-16T22:14:40.363846+00:00"
+   "first_seen": "2026-09-16T22:14:40.363846+00:00",
+   "also_in": [
+    "targetedonc.com"
+   ]
   },
   {
    "title": "Real-world survival benefit of chemotherapy in elderly patients with advanced gastric cancer: a population-based SEER analysis",
