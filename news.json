@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-22T22:13:52.883156+00:00",
+ "updated": "2026-09-23T10:15:04.341233+00:00",
  "items": [
   {
    "title": "Antengene Starts Phase III CLINCH-3 Trial of ATG-022 in Advanced Gastric Cancer",
@@ -7,7 +7,10 @@
    "source": "The Clinical Trial Vanguard",
    "published": "2026-09-21T07:33:39+00:00",
    "blurb": "Antengene Starts Phase III CLINCH-3 Trial of ATG-022 in Advanced Gastric Cancer The Clinical Trial Vanguard",
-   "first_seen": "2026-09-21T16:15:28.465332+00:00"
+   "first_seen": "2026-09-21T16:15:28.465332+00:00",
+   "also_in": [
+    "clinicaltrialvanguard.com"
+   ]
   },
   {
    "title": "PD-L1 expression and survival in unresectable/recurrent gastric cancer treated by 1st-line treatment without immune checkpoint inhibitors: JCOG1013A1",
@@ -421,17 +424,6 @@
    "first_seen": "2026-09-13T03:53:04.759125+00:00",
    "also_in": [
     "managedhealthcareexecutive.com"
-   ]
-  },
-  {
-   "title": "Comprehensive analysis of FGFR2b and its correlation with essential biomarkers, intratumoral heterogeneity, and survival in advanced gastric cancer",
-   "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE80TXRJLWlwX2VfalBiNEQ5R3JZbElsZW9rbVk3TklQUDRYTzhuTmVpQkF4NEd5Wlo4cFBraUFzdklLVGU1T2l5cTJOWE81cjZod2IyQUNyM2JyWV80NDRn?oc=5",
-   "source": "Nature",
-   "published": "2026-03-27T07:00:00+00:00",
-   "blurb": "Comprehensive analysis of FGFR2b and its correlation with essential biomarkers, intratumoral heterogeneity, and survival in advanced gastric cancer Nature",
-   "first_seen": "2026-09-13T03:53:04.759125+00:00",
-   "also_in": [
-    "nature.com"
    ]
   }
  ]
