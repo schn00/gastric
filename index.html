@@ -31,6 +31,7 @@
   --wait:       #7a5715;
   --wait-bg:    #f7e5c3;
   --wait-line:  #e3cd9e;
+  --hl-bg:      #f6e4b5;
   --serif: "Newsreader", Georgia, serif;
   --sans:  "Inter", system-ui, -apple-system, sans-serif;
   --mono:  "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -43,6 +44,7 @@
     --chip-bg: #201d17; --chip-ink: #a89c86; --chip-line: #34302a;
     --go: #95bb82; --go-bg: #1e2a19; --go-line: #33452c;
     --wait: #d8a961; --wait-bg: #2b2110; --wait-line: #473719;
+    --hl-bg: #40310f;
   }
 }
 :root[data-theme="dark"] {
@@ -52,6 +54,7 @@
     --chip-bg: #201d17; --chip-ink: #a89c86; --chip-line: #34302a;
     --go: #95bb82; --go-bg: #1e2a19; --go-line: #33452c;
     --wait: #d8a961; --wait-bg: #2b2110; --wait-line: #473719;
+    --hl-bg: #40310f;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -118,6 +121,19 @@ select {
 }
 .count { margin-left: auto; font-family: var(--serif); font-style: italic;
   font-size: .8rem; color: var(--faint); }
+input[type="search"] {
+  font: inherit; font-size: .82rem; color: var(--ink); background: transparent;
+  border: 1px solid var(--rule-firm); border-radius: 6px;
+  padding: .35rem .7rem; flex: 1 1 150px; max-width: 250px; min-width: 0;
+  appearance: none; -webkit-appearance: none; }
+input[type="search"]::placeholder { color: var(--faint); }
+input[type="search"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none;
+  width: 13px; height: 13px; cursor: pointer;
+  background: var(--faint);
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="black" stroke-width="2" stroke-linecap="round"/></svg>') center/contain no-repeat; }
+mark { background: var(--hl-bg); color: inherit; border-radius: 2px;
+  padding: 0 .1em; }
 
 /* ---- date rules ---- */
 .daterule { display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap;
@@ -206,6 +222,7 @@ footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
   <section id="panel-news" role="tabpanel" aria-labelledby="tab-news">
     <div class="controls">
       <select id="source-filter"><option value="">All sources</option></select>
+      <input type="search" id="news-search" placeholder="Search articles" autocomplete="off" aria-label="Search articles">
       <span class="count" id="news-count"></span>
     </div>
     <div id="news-body"><div class="loading">Loading feed…</div></div>
@@ -228,6 +245,7 @@ footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
         <option value="late">Phase 2 and 3</option>
         <option value="early">Phase 1 and 1/2</option>
       </select>
+      <input type="search" id="trials-search" placeholder="Search trials" autocomplete="off" aria-label="Search trials">
       <span class="count" id="trials-count"></span>
     </div>
     <div id="trials-body"><div class="loading">Loading trials…</div></div>
@@ -241,6 +259,7 @@ footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
         <option value="90" selected>Posted in last 90 days</option>
         <option value="180">Posted in last 180 days</option>
       </select>
+      <input type="search" id="new-search" placeholder="Search trials" autocomplete="off" aria-label="Search new trials">
       <span class="count" id="new-count"></span>
     </div>
     <div id="new-body"><div class="loading">Loading trials…</div></div>
@@ -261,6 +280,16 @@ footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
 var HOME = { lat: 40.7306, lon: -73.9866 };   // Lower Manhattan — edit to re-centre
 var API  = "https://clinicaltrials.gov/api/v2/studies";
 var MAX_PAGES = 6;
+var COND = "gastric cancer OR stomach cancer OR gastroesophageal junction adenocarcinoma " +
+           "OR esophagogastric adenocarcinoma";
+var TERM = "metastatic OR advanced OR unresectable OR metastasis";
+var FIELDS = [
+  "protocolSection.identificationModule",
+  "protocolSection.statusModule",
+  "protocolSection.designModule",
+  "protocolSection.sponsorCollaboratorsModule",
+  "protocolSection.contactsLocationsModule"
+].join(",");
 
 var $ = function (id) { return document.getElementById(id); };
 
@@ -330,7 +359,8 @@ function selectTab(active) {
     $("tab-" + key).setAttribute("aria-selected", String(key === active));
     $(panels[key]).hidden = key !== active;
   });
-  if (active !== "news" && !trials.loaded && !trials.loading) loadTrials();
+  if (active === "trials") loadNearby();
+  if (active === "new") loadRecent();
 }
 
 /* ---------------------------------------------------------------- dates */
@@ -402,6 +432,43 @@ function buildSourceFilter() {
   $("source-filter").addEventListener("change", renderNews);
 }
 
+/* ------------------------------------------------------------- search */
+var hlTerms = [];
+
+function terms(value) {
+  return String(value || "").toLowerCase().split(/\s+/).filter(Boolean);
+}
+
+function matches(haystack, words) {
+  if (!words.length) return true;
+  var text = haystack.join(" ").toLowerCase();
+  return words.every(function (w) { return text.indexOf(w) !== -1; });
+}
+
+function rxEsc(t) { return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+
+/* escape as usual, but wrap any matched run in <mark> */
+function hl(value) {
+  var text = String(value == null ? "" : value);
+  if (!hlTerms.length) return esc(text);
+  var re = new RegExp("(" + hlTerms.map(rxEsc).join("|") + ")", "gi");
+  var out = "", last = 0, m;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index === re.lastIndex) { re.lastIndex++; continue; }
+    out += esc(text.slice(last, m.index)) + "<mark>" + esc(m[0]) + "</mark>";
+    last = m.index + m[0].length;
+  }
+  return out + esc(text.slice(last));
+}
+
+function onSearch(id, render) {
+  var timer = null;
+  $(id).addEventListener("input", function () {
+    clearTimeout(timer);
+    timer = setTimeout(render, 120);
+  });
+}
+
 function isUnread(item) {
   var seen = parseDate(item.first_seen);
   return seen ? seen.getTime() > news.lastVisit : false;
@@ -409,15 +476,25 @@ function isUnread(item) {
 
 function renderNews() {
   var pick = $("source-filter").value;
-  var list = news.items.filter(function (i) { return !pick || i.source === pick; });
+  var base = news.items.filter(function (i) { return !pick || i.source === pick; });
 
-  $("news-count").textContent = list.length + (list.length === 1 ? " item" : " items");
+  var words = terms($("news-search").value);
+  hlTerms = words;
+  var list = !words.length ? base : base.filter(function (i) {
+    return matches([i.title, i.blurb, i.source], words);
+  });
+
+  $("news-count").textContent = words.length
+    ? list.length + " of " + base.length + " items"
+    : list.length + (list.length === 1 ? " item" : " items");
 
   if (!list.length) {
-    $("news-body").innerHTML =
-      '<div class="note">Nothing matched. The feeds are filtered to gastric and ' +
-      'gastroesophageal items, so quiet weeks are normal — widen the keyword list in ' +
-      '<code>sources.json</code> if it stays empty.</div>';
+    $("news-body").innerHTML = words.length
+      ? '<div class="note">No articles match that search. It looks at the ' +
+        'headline, the summary and the source name.</div>'
+      : '<div class="note">Nothing matched. The feeds are filtered to gastric and ' +
+        'gastroesophageal items, so quiet weeks are normal — widen the keyword list in ' +
+        '<code>sources.json</code> if it stays empty.</div>';
     return;
   }
 
@@ -464,19 +541,23 @@ function newsItem(item) {
   if (item.also_in && item.also_in.length) {
     trail += " · also in " + esc(item.also_in.join(", "));
   }
-  var meta = '<span class="chip">' + esc(item.source) + "</span> " +
+  var meta = '<span class="chip">' + hl(item.source) + "</span> " +
              '<span class="when">' + trail + "</span>";
   return '<article class="item' + (isUnread(item) ? " unread" : "") + '">' +
            '<div class="dot"></div><div class="body">' +
              '<div class="meta">' + meta + "</div>" +
              '<a class="headline" href="' + esc(item.url) + '" target="_blank" rel="noopener">' +
-               esc(item.title) + "</a>" +
-             (item.blurb ? '<p class="blurb">' + esc(item.blurb) + "</p>" : "") +
+               hl(item.title) + "</a>" +
+             (item.blurb ? '<p class="blurb">' + hl(item.blurb) + "</p>" : "") +
            "</div></article>";
 }
 
 /* ---------------------------------------------------------------- trials */
-var trials = { all: [], loaded: false, loading: false };
+/* Two separate result sets. The trials tab asks the server for a status- and
+   distance-limited set, so what comes back is complete. The new-trials tab asks
+   for newest-first, so the first pages are exactly what it needs. */
+var nearby = { key: null, list: [], total: 0, loaded: false, loading: false };
+var recent = { list: [], total: 0, loaded: false, loading: false };
 
 function miles(lat, lon) {
   var toRad = Math.PI / 180;
@@ -539,81 +620,130 @@ function shape(study) {
   };
 }
 
-function loadTrials() {
-  trials.loading = true;
+/* One paged fetch. Returns everything the query matches, up to the page cap,
+   plus the server's own count so we can tell when we have been truncated. */
+function fetchStudies(params, maxPages) {
   var collected = [];
+  var total = 0;
+  params.set("fields", FIELDS);
+  params.set("pageSize", "200");
+  params.set("countTotal", "true");
 
   function page(token, depth) {
-    var params = new URLSearchParams();
-    params.set("query.cond",
-      "gastric cancer OR stomach cancer OR gastroesophageal junction adenocarcinoma " +
-      "OR esophagogastric adenocarcinoma");
-    params.set("query.term", "metastatic OR advanced OR unresectable OR metastasis");
-    params.set("fields", [
-      "protocolSection.identificationModule",
-      "protocolSection.statusModule",
-      "protocolSection.designModule",
-      "protocolSection.sponsorCollaboratorsModule",
-      "protocolSection.contactsLocationsModule"
-    ].join(","));
-    params.set("pageSize", "200");
     if (token) params.set("pageToken", token);
-
     return fetch(API + "?" + params.toString())
       .then(function (r) {
         if (!r.ok) throw new Error("ClinicalTrials.gov returned HTTP " + r.status);
         return r.json();
       })
       .then(function (data) {
+        if (typeof data.totalCount === "number") total = data.totalCount;
         collected = collected.concat((data.studies || []).map(shape));
-        if (data.nextPageToken && depth < MAX_PAGES) {
-          return page(data.nextPageToken, depth + 1);
-        }
+        if (data.nextPageToken && depth < maxPages) return page(data.nextPageToken, depth + 1);
       });
   }
 
-  page(null, 1)
-    .then(function () {
-      trials.all = collected.filter(function (t) { return t.nct; });
-      trials.loaded = true;
-      trials.loading = false;
+  return page(null, 1).then(function () {
+    return { list: collected.filter(function (t) { return t.nct; }), total: total };
+  });
+}
+
+function baseParams() {
+  var params = new URLSearchParams();
+  params.set("query.cond", COND);
+  params.set("query.term", TERM);
+  return params;
+}
+
+function loadNearby() {
+  var radius = $("loc-filter").value;
+  var status = $("status-filter").value;
+  var key = radius + "|" + status;
+
+  if (nearby.loaded && nearby.key === key) { renderTrials(); return; }
+  if (nearby.loading) return;
+
+  nearby.loading = true;
+  $("trials-body").innerHTML = '<div class="loading">Loading trials…</div>';
+
+  var params = baseParams();
+  if (status) {
+    params.append("filter.overallStatus", status);
+  } else {
+    params.append("filter.overallStatus", "RECRUITING");
+    params.append("filter.overallStatus", "NOT_YET_RECRUITING");
+  }
+  if (Number(radius)) {
+    params.set("filter.geo",
+      "distance(" + HOME.lat + "," + HOME.lon + "," + Number(radius) + "mi)");
+  }
+
+  fetchStudies(params, MAX_PAGES)
+    .then(function (result) {
+      nearby.key = key;
+      nearby.list = result.list;
+      nearby.total = result.total;
+      nearby.loaded = true;
+      nearby.loading = false;
       renderTrials();
-      renderNewTrials();
     })
     .catch(function (err) {
-      trials.loading = false;
-      var message =
-        '<div class="note">Could not reach ClinicalTrials.gov.<br><br>' +
-        esc(err.message) +
-        '<br><button id="retry">Try again</button></div>';
-      $("trials-body").innerHTML = message;
-      $("new-body").innerHTML = message.replace('id="retry"', 'id="retry2"');
-      ["retry", "retry2"].forEach(function (id) {
-        var b = $(id);
-        if (b) b.addEventListener("click", function () {
-          $("trials-body").innerHTML = '<div class="loading">Loading trials…</div>';
-          $("new-body").innerHTML = '<div class="loading">Loading trials…</div>';
-          loadTrials();
-        });
-      });
+      nearby.loading = false;
+      loadFailed("trials-body", err, loadNearby);
     });
 }
 
-["loc-filter", "status-filter", "phase-filter"].forEach(function (id) {
-  $(id).addEventListener("change", renderTrials);
+function loadRecent() {
+  if (recent.loaded) { renderNewTrials(); return; }
+  if (recent.loading) return;
+
+  recent.loading = true;
+  var params = baseParams();
+  params.set("sort", "StudyFirstPostDate:desc");
+
+  fetchStudies(params, 2)
+    .then(function (result) {
+      recent.list = result.list;
+      recent.total = result.total;
+      recent.loaded = true;
+      recent.loading = false;
+      renderNewTrials();
+    })
+    .catch(function (err) {
+      recent.loading = false;
+      loadFailed("new-body", err, loadRecent);
+    });
+}
+
+function loadFailed(target, err, retry) {
+  $(target).innerHTML =
+    '<div class="note">Could not reach ClinicalTrials.gov.<br><br>' +
+    esc(err.message) + '<br><button class="retrybtn">Try again</button></div>';
+  var button = $(target).querySelector(".retrybtn");
+  if (button) button.addEventListener("click", function () {
+    $(target).innerHTML = '<div class="loading">Loading trials…</div>';
+    retry();
+  });
+}
+
+["loc-filter", "status-filter"].forEach(function (id) {
+  $(id).addEventListener("change", loadNearby);
 });
+$("phase-filter").addEventListener("change", renderTrials);
 $("new-window").addEventListener("change", renderNewTrials);
+onSearch("news-search", renderNews);
+onSearch("trials-search", renderTrials);
+onSearch("new-search", renderNewTrials);
 
 function renderTrials() {
-  if (!trials.loaded) return;
+  if (!nearby.loaded) return;
 
   var radius = Number($("loc-filter").value);
-  var status = $("status-filter").value;
   var phase  = $("phase-filter").value;
 
-  var list = trials.all.filter(function (t) {
-    if (status && t.status !== status) return false;
-    if (!status && t.status !== "RECRUITING" && t.status !== "NOT_YET_RECRUITING") return false;
+  /* status and distance were applied by the server; this second pass keeps the
+     list consistent with the distances actually shown on each row */
+  var list = nearby.list.filter(function (t) {
     if (radius) {
       if (!t.nearest || t.nearest.distance > radius) return false;
     } else if (!t.usSites) {
@@ -630,38 +760,79 @@ function renderTrials() {
     return da - db;
   });
 
-  $("trials-count").textContent = list.length + (list.length === 1 ? " trial" : " trials");
+  var words = terms($("trials-search").value);
+  hlTerms = words;
+  var base = list;
+  if (words.length) list = base.filter(function (t) { return matches(trialText(t), words); });
+
+  $("trials-count").textContent = words.length
+    ? list.length + " of " + base.length + " trials"
+    : list.length + (list.length === 1 ? " trial" : " trials");
 
   if (!list.length) {
-    $("trials-body").innerHTML =
-      '<div class="note">No trials match these filters. Widening the distance is ' +
-      'usually what opens things up — a lot of gastric trials run out of a handful ' +
-      'of centres.</div>';
+    $("trials-body").innerHTML = words.length
+      ? '<div class="note">No trials match that search. It looks at the title, ' +
+        'sponsor, sites and NCT number of the trials passing the filters above.</div>'
+      : '<div class="note">No trials match these filters. Widening the distance is ' +
+        'usually what opens things up — a lot of gastric trials run out of a handful ' +
+        'of centres.</div>';
     return;
   }
 
-  $("trials-body").innerHTML = list.map(function (t) { return trialItem(t); }).join("");
+  var short = nearby.total && nearby.total > nearby.list.length
+    ? '<div class="note">Showing ' + nearby.list.length + ' of ' + nearby.total +
+      ' matching records — narrow the filters to see the rest.</div>'
+    : "";
+
+  $("trials-body").innerHTML =
+    short + list.map(function (t) { return trialItem(t); }).join("");
 }
 
 function renderNewTrials() {
-  if (!trials.loaded) return;
+  if (!recent.loaded) return;
   var days = Number($("new-window").value);
   var cutoff = Date.now() - days * 86400000;
 
-  var list = trials.all.filter(function (t) {
+  var list = recent.list.filter(function (t) {
     return t.posted && t.posted.getTime() >= cutoff && t.usSites > 0;
   });
   list.sort(function (a, b) { return b.posted - a.posted; });
 
-  $("new-count").textContent = list.length + (list.length === 1 ? " trial" : " trials");
+  var words = terms($("new-search").value);
+  hlTerms = words;
+  var base = list;
+  if (words.length) list = base.filter(function (t) { return matches(trialText(t), words); });
+
+  $("new-count").textContent = words.length
+    ? list.length + " of " + base.length + " trials"
+    : list.length + (list.length === 1 ? " trial" : " trials");
 
   if (!list.length) {
-    $("new-body").innerHTML =
-      '<div class="note">No US trials first posted in this window. Try a longer one.</div>';
+    $("new-body").innerHTML = words.length
+      ? '<div class="note">No trials match that search within this window.</div>'
+      : '<div class="note">No US trials first posted in this window. Try a longer one.</div>';
     return;
   }
 
-  $("new-body").innerHTML = list.map(function (t) { return trialItem(t, true); }).join("");
+  /* the fetch is newest-first, so the window is complete only if we reached
+     back past the cutoff */
+  var oldest = null;
+  recent.list.forEach(function (t) {
+    if (t.posted && (!oldest || t.posted < oldest)) oldest = t.posted;
+  });
+  var short = oldest && oldest.getTime() > cutoff
+    ? '<div class="note">This window reaches further back than the records ' +
+      'loaded, so it may be incomplete. A shorter window is exact.</div>'
+    : "";
+
+  $("new-body").innerHTML =
+    short + list.map(function (t) { return trialItem(t, true); }).join("");
+}
+
+function trialText(t) {
+  var parts = [t.title, t.sponsor, t.nct, statusLabel(t.status), phaseLabel(t.phases)];
+  if (t.nearest) parts.push(t.nearest.city, t.nearest.state, t.nearest.facility);
+  return parts.filter(Boolean);
 }
 
 function trialItem(t, showPosted) {
@@ -673,11 +844,11 @@ function trialItem(t, showPosted) {
   }
 
   var chips = '<span class="chip ' + (t.status === "RECRUITING" ? "go" : "wait") + '">' +
-                esc(statusLabel(t.status)) + "</span> ";
+                hl(statusLabel(t.status)) + "</span> ";
   if (distance) chips += '<span class="chip">' + esc(distance) + "</span> ";
-  chips += '<span class="chip">' + esc(phaseLabel(t.phases)) + "</span> ";
+  chips += '<span class="chip">' + hl(phaseLabel(t.phases)) + "</span> ";
 
-  var meta = chips + "&nbsp;" + esc(t.nct) + " · " + (showPosted
+  var meta = chips + "&nbsp;" + hl(t.nct) + " · " + (showPosted
                ? "posted " + esc(age(t.posted))
                : "updated " + esc(age(t.updated)));
 
@@ -685,14 +856,14 @@ function trialItem(t, showPosted) {
   if (t.nearest) {
     var city = [t.nearest.city, t.nearest.state].filter(Boolean).join(", ");
     var others = t.sites - 1;
-    where = esc(city || t.nearest.facility || "Location listed") +
+    where = hl(city || t.nearest.facility || "Location listed") +
             (others > 0 ? " · plus " + others + " other site" + (others === 1 ? "" : "s") : "");
   }
 
   return '<article class="item trial"><div class="dot"></div><div class="body">' +
            '<a class="headline" href="https://clinicaltrials.gov/study/' + esc(t.nct) +
-             '" target="_blank" rel="noopener">' + esc(t.title) + "</a>" +
-           '<p class="blurb">' + esc(t.sponsor) + " · " + where + "</p>" +
+             '" target="_blank" rel="noopener">' + hl(t.title) + "</a>" +
+           '<p class="blurb">' + hl(t.sponsor) + " · " + where + "</p>" +
            '<div class="meta">' + meta + "</div>" +
          "</div></article>";
 }
