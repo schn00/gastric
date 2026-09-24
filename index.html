@@ -32,6 +32,12 @@
   --wait-bg:    #f7e5c3;
   --wait-line:  #e3cd9e;
   --hl-bg:      #f6e4b5;
+  --term-bg:    #f1e3d6;
+  --term-ink:   #7a3f22;
+  --term-line:  #dcb99f;
+  --gastric-bg: #ecd9c8;
+  --gastric-ink:#7c3a1a;
+  --gastric-line:#c99a78;
   --serif: "Newsreader", Georgia, serif;
   --sans:  "Inter", system-ui, -apple-system, sans-serif;
   --mono:  "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -45,6 +51,8 @@
     --go: #95bb82; --go-bg: #1e2a19; --go-line: #33452c;
     --wait: #d8a961; --wait-bg: #2b2110; --wait-line: #473719;
     --hl-bg: #40310f;
+    --term-bg: #2a1d14; --term-ink: #e0a57f; --term-line: #4d3322;
+    --gastric-bg: #33200f; --gastric-ink: #f0b48c; --gastric-line: #6a4225;
   }
 }
 :root[data-theme="dark"] {
@@ -55,6 +63,8 @@
     --go: #95bb82; --go-bg: #1e2a19; --go-line: #33452c;
     --wait: #d8a961; --wait-bg: #2b2110; --wait-line: #473719;
     --hl-bg: #40310f;
+    --term-bg: #2a1d14; --term-ink: #e0a57f; --term-line: #4d3322;
+    --gastric-bg: #33200f; --gastric-ink: #f0b48c; --gastric-line: #6a4225;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -176,6 +186,28 @@ a.headline:hover { text-decoration: underline; text-decoration-thickness: 1px;
 
 /* ---- trials ---- */
 .trial .blurb { margin-bottom: .55rem; }
+.trial .conds { font-size: .8rem; color: var(--faint); line-height: 1.55;
+  margin: -.3rem 0 .55rem; }
+.chip.term    { background: var(--term-bg); color: var(--term-ink);
+  border-color: var(--term-line); }
+.chip.gastric { background: var(--gastric-bg); color: var(--gastric-ink);
+  border-color: var(--gastric-line); font-family: var(--serif);
+  font-style: italic; font-weight: 500; }
+.also { font-family: var(--serif); font-style: italic; }
+
+/* related trials — watched-term toggles */
+#tab-related { font-style: italic; }
+.watching { margin-bottom: 1rem; }
+.watching .label { font-family: var(--serif); font-style: italic; font-size: .8rem;
+  color: var(--faint); margin-bottom: .45rem; }
+.watchlist { display: flex; flex-wrap: wrap; gap: .4rem; }
+.watch { appearance: none; font: inherit; font-size: .76rem; cursor: pointer;
+  background: var(--term-bg); color: var(--term-ink);
+  border: 0.5px solid var(--term-line); border-radius: 20px; padding: .25rem .7rem; }
+.watch .n { opacity: .6; margin-left: .15rem; }
+.watch.off { background: transparent; color: var(--faint);
+  border-color: var(--rule-firm); text-decoration: line-through;
+  text-decoration-color: var(--rule-firm); }
 .trial .meta { margin-bottom: 0; }
 
 /* ---- states ---- */
@@ -215,6 +247,7 @@ footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" id="tab-news"    aria-selected="true"  aria-controls="panel-news">News</button>
     <button class="tab" role="tab" id="tab-trials"  aria-selected="false" aria-controls="panel-trials">Trials</button>
+    <button class="tab" role="tab" id="tab-related" aria-selected="false" aria-controls="panel-related">Related trials</button>
     <button class="tab" role="tab" id="tab-new"     aria-selected="false" aria-controls="panel-new">New trials</button>
   </div>
 
@@ -249,6 +282,28 @@ footer { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
       <span class="count" id="trials-count"></span>
     </div>
     <div id="trials-body"><div class="loading">Loading trials…</div></div>
+  </section>
+
+  <!-- Related trials -->
+  <section id="panel-related" role="tabpanel" aria-labelledby="tab-related" hidden>
+    <div class="watching">
+      <div class="label">watching — tap to show or hide</div>
+      <div class="watchlist" id="watch-chips"></div>
+    </div>
+    <div class="controls">
+      <select id="rel-loc">
+        <option value="150">Within 150 miles</option>
+        <option value="400">Within 400 miles</option>
+        <option value="0">Anywhere in the US</option>
+      </select>
+      <select id="rel-status">
+        <option value="RECRUITING">Recruiting</option>
+        <option value="">Recruiting and upcoming</option>
+      </select>
+      <input type="search" id="related-search" placeholder="Search trials" autocomplete="off" aria-label="Search related trials">
+      <span class="count" id="related-count"></span>
+    </div>
+    <div id="related-body"><div class="loading">Loading trials…</div></div>
   </section>
 
   <!-- New trials -->
@@ -288,8 +343,24 @@ var FIELDS = [
   "protocolSection.statusModule",
   "protocolSection.designModule",
   "protocolSection.sponsorCollaboratorsModule",
-  "protocolSection.contactsLocationsModule"
+  "protocolSection.contactsLocationsModule",
+  "protocolSection.conditionsModule"
 ].join(",");
+
+/* Related trials: each watched term is searched on its own, limited to
+   solid-tumour and GI conditions so HER2 or PD-L1 do not pull in every
+   breast or lung trial. Edit either list freely. */
+var WATCH = [
+  { label: "HER2",       query: "HER2 OR ERBB2" },
+  { label: "CLDN18.2",   query: "CLDN18.2 OR \"claudin 18.2\" OR claudin18.2" },
+  { label: "MSI-H",      query: "MSI-H OR \"microsatellite instability\" OR dMMR OR \"mismatch repair\"" },
+  { label: "FGFR2b",     query: "FGFR2b OR FGFR2" },
+  { label: "PD-L1",      query: "PD-L1" },
+  { label: "Peritoneal", query: "peritoneal" }
+];
+var RELATED_SCOPE = "solid tumor OR solid tumors OR gastrointestinal OR digestive system " +
+  "OR gastric OR stomach OR esophageal OR esophagogastric OR gastroesophageal OR peritoneal";
+var GASTRIC_RE = /gastric|stomach|gastro-?esophageal|esophago-?gastric|\bGEJ\b/i;
 
 var $ = function (id) { return document.getElementById(id); };
 
@@ -350,7 +421,8 @@ function esc(s) {
 }
 
 /* ---------------------------------------------------------------- tabs */
-var panels = { news: "panel-news", trials: "panel-trials", "new": "panel-new" };
+var panels = { news: "panel-news", trials: "panel-trials",
+               related: "panel-related", "new": "panel-new" };
 Object.keys(panels).forEach(function (key) {
   $("tab-" + key).addEventListener("click", function () { selectTab(key); });
 });
@@ -360,6 +432,7 @@ function selectTab(active) {
     $(panels[key]).hidden = key !== active;
   });
   if (active === "trials") loadNearby();
+  if (active === "related") loadRelated();
   if (active === "new") loadRecent();
 }
 
@@ -558,6 +631,7 @@ function newsItem(item) {
    for newest-first, so the first pages are exactly what it needs. */
 var nearby = { key: null, list: [], total: 0, loaded: false, loading: false };
 var recent = { list: [], total: 0, loaded: false, loading: false };
+var related = { key: null, list: [], perTerm: {}, loaded: false, opened: false };
 
 function miles(lat, lon) {
   var toRad = Math.PI / 180;
@@ -616,7 +690,8 @@ function shape(study) {
     sponsor:  spon.name || "Sponsor not stated",
     nearest:  nearest,
     usSites:  usSites,
-    sites:    locs.length
+    sites:    locs.length,
+    conditions: (p.conditionsModule || {}).conditions || []
   };
 }
 
@@ -655,31 +730,52 @@ function baseParams() {
   return params;
 }
 
-function loadNearby() {
-  var radius = $("loc-filter").value;
-  var status = $("status-filter").value;
-  var key = radius + "|" + status;
+/* Shared, cached per distance-and-status. Both the Trials tab and the
+   overlap check on Related trials read from this. */
+var nearbyCache = {};
 
-  if (nearby.loaded && nearby.key === key) { renderTrials(); return; }
-  if (nearby.loading) return;
-
-  nearby.loading = true;
-  $("trials-body").innerHTML = '<div class="loading">Loading trials…</div>';
-
-  var params = baseParams();
+function statusParams(params, status) {
   if (status) {
     params.append("filter.overallStatus", status);
   } else {
     params.append("filter.overallStatus", "RECRUITING");
     params.append("filter.overallStatus", "NOT_YET_RECRUITING");
   }
+  return params;
+}
+
+function geoParams(params, radius) {
   if (Number(radius)) {
     params.set("filter.geo",
       "distance(" + HOME.lat + "," + HOME.lon + "," + Number(radius) + "mi)");
   }
+  return params;
+}
 
-  fetchStudies(params, MAX_PAGES)
+function nearbyFor(radius, status) {
+  var key = radius + "|" + status;
+  if (!nearbyCache[key]) {
+    var params = geoParams(statusParams(baseParams(), status), radius);
+    nearbyCache[key] = fetchStudies(params, MAX_PAGES)
+      .catch(function (err) { delete nearbyCache[key]; throw err; });
+  }
+  return nearbyCache[key];
+}
+
+function loadNearby() {
+  var radius = $("loc-filter").value;
+  var status = $("status-filter").value;
+  var key = radius + "|" + status;
+
+  if (nearby.loaded && nearby.key === key) { renderTrials(); return; }
+
+  nearby.loading = true;
+  $("trials-body").innerHTML = '<div class="loading">Loading trials…</div>';
+
+  nearbyFor(radius, status)
     .then(function (result) {
+      /* ignore a result the filters have since moved on from */
+      if ($("loc-filter").value + "|" + $("status-filter").value !== key) return;
       nearby.key = key;
       nearby.list = result.list;
       nearby.total = result.total;
@@ -690,6 +786,85 @@ function loadNearby() {
     .catch(function (err) {
       nearby.loading = false;
       loadFailed("trials-body", err, loadNearby);
+    });
+}
+
+/* ---------------------------------------------------------- related */
+var termCache = {};
+
+function termFor(watch, radius, status) {
+  var key = watch.label + "|" + radius + "|" + status;
+  if (!termCache[key]) {
+    var params = new URLSearchParams();
+    params.set("query.cond", RELATED_SCOPE);
+    params.set("query.term", watch.query);
+    geoParams(statusParams(params, status), radius);
+    termCache[key] = fetchStudies(params, 2)
+      .catch(function (err) { delete termCache[key]; throw err; });
+  }
+  return termCache[key];
+}
+
+function watchOff() {
+  try {
+    var v = JSON.parse(localStorage.getItem("gw:watch-off"));
+    return Array.isArray(v) ? v : [];
+  } catch (e) { return []; }
+}
+
+function setWatchOff(list) {
+  try { localStorage.setItem("gw:watch-off", JSON.stringify(list)); } catch (e) {}
+}
+
+function loadRelated() {
+  related.opened = true;
+  var radius = $("rel-loc").value;
+  var status = $("rel-status").value;
+  var key = radius + "|" + status;
+
+  if (related.loaded && related.key === key) { renderRelated(); return; }
+
+  $("related-body").innerHTML = '<div class="loading">Loading trials…</div>';
+
+  var jobs = WATCH.map(function (w) { return termFor(w, radius, status); });
+
+  Promise.all([Promise.all(jobs), nearbyFor(radius, status)])
+    .then(function (results) {
+      if ($("rel-loc").value + "|" + $("rel-status").value !== key) return;
+
+      var byNct = {}, order = [], perTerm = {};
+      results[0].forEach(function (result, i) {
+        var label = WATCH[i].label;
+        perTerm[label] = { total: result.total, fetched: result.list.length };
+        result.list.forEach(function (t) {
+          var entry = byNct[t.nct];
+          if (!entry) {
+            entry = {};
+            for (var k in t) entry[k] = t[k];
+            entry.terms = [];
+            byNct[t.nct] = entry;
+            order.push(t.nct);
+          }
+          if (entry.terms.indexOf(label) === -1) entry.terms.push(label);
+        });
+      });
+
+      var inTrials = {};
+      results[1].list.forEach(function (t) { inTrials[t.nct] = true; });
+
+      related.list = order.map(function (nct) {
+        var t = byNct[nct];
+        t.alsoInTrials = !!inTrials[nct];
+        t.listsGastric = (t.conditions || []).some(function (c) { return GASTRIC_RE.test(c); });
+        return t;
+      });
+      related.perTerm = perTerm;
+      related.key = key;
+      related.loaded = true;
+      renderRelated();
+    })
+    .catch(function (err) {
+      loadFailed("related-body", err, loadRelated);
     });
 }
 
@@ -726,14 +901,37 @@ function loadFailed(target, err, retry) {
   });
 }
 
-["loc-filter", "status-filter"].forEach(function (id) {
-  $(id).addEventListener("change", loadNearby);
+/* Distance and status are shared by Trials and Related trials, and applied
+   by the server, so a change on either tab updates both and re-queries. */
+[["loc-filter", "rel-loc"], ["status-filter", "rel-status"]].forEach(function (pair) {
+  pair.forEach(function (id, i) {
+    $(id).addEventListener("change", function () {
+      $(pair[1 - i]).value = $(id).value;
+      loadNearby();
+      if (related.opened) loadRelated();
+    });
+  });
 });
 $("phase-filter").addEventListener("change", renderTrials);
+
+$("watch-chips").addEventListener("click", function (event) {
+  var el = event.target;
+  while (el && el !== this && !(el.getAttribute && el.getAttribute("data-term"))) {
+    el = el.parentNode;
+  }
+  if (!el || el === this) return;
+  var label = el.getAttribute("data-term");
+  var off = watchOff();
+  var at = off.indexOf(label);
+  if (at === -1) off.push(label); else off.splice(at, 1);
+  setWatchOff(off);
+  renderRelated();
+});
 $("new-window").addEventListener("change", renderNewTrials);
 onSearch("news-search", renderNews);
 onSearch("trials-search", renderTrials);
 onSearch("new-search", renderNewTrials);
+onSearch("related-search", renderRelated);
 
 function renderTrials() {
   if (!nearby.loaded) return;
@@ -829,13 +1027,75 @@ function renderNewTrials() {
     short + list.map(function (t) { return trialItem(t, true); }).join("");
 }
 
+function renderRelated() {
+  if (!related.loaded) return;
+
+  var radius = Number($("rel-loc").value);
+  var off = watchOff();
+
+  var inRange = related.list.filter(function (t) {
+    if (radius) return !!t.nearest && t.nearest.distance <= radius;
+    return t.usSites > 0;
+  });
+
+  $("watch-chips").innerHTML = WATCH.map(function (w) {
+    var n = inRange.filter(function (t) { return t.terms.indexOf(w.label) > -1; }).length;
+    var isOff = off.indexOf(w.label) > -1;
+    return '<button type="button" class="watch' + (isOff ? " off" : "") + '"' +
+           ' data-term="' + esc(w.label) + '" aria-pressed="' + String(!isOff) + '">' +
+           esc(w.label) + ' <span class="n">' + n + "</span></button>";
+  }).join("");
+
+  var base = inRange.filter(function (t) {
+    return t.terms.some(function (label) { return off.indexOf(label) === -1; });
+  });
+  base.sort(function (a, b) {
+    var da = a.nearest ? a.nearest.distance : Infinity;
+    var db = b.nearest ? b.nearest.distance : Infinity;
+    return da - db;
+  });
+
+  var words = terms($("related-search").value);
+  hlTerms = words;
+  var list = words.length
+    ? base.filter(function (t) { return matches(trialText(t), words); })
+    : base;
+
+  $("related-count").textContent = words.length
+    ? list.length + " of " + base.length + " trials"
+    : list.length + (list.length === 1 ? " trial" : " trials");
+
+  if (!list.length) {
+    var message = words.length
+      ? "No related trials match that search."
+      : off.length === WATCH.length
+        ? "Every watched term is switched off. Tap one above to show its trials."
+        : "No related trials within these filters. Widening the distance usually helps.";
+    $("related-body").innerHTML = '<div class="note">' + message + "</div>";
+    return;
+  }
+
+  var cut = WATCH.filter(function (w) {
+    var p = related.perTerm[w.label];
+    return off.indexOf(w.label) === -1 && p && p.total > p.fetched;
+  }).map(function (w) { return w.label; });
+  var short = cut.length
+    ? '<div class="note">' + esc(cut.join(", ")) + (cut.length === 1 ? " has" : " have") +
+      " more matches than were loaded. Narrow the distance to see them all.</div>"
+    : "";
+
+  $("related-body").innerHTML =
+    short + list.map(function (t) { return trialItem(t, false, true); }).join("");
+}
+
 function trialText(t) {
-  var parts = [t.title, t.sponsor, t.nct, statusLabel(t.status), phaseLabel(t.phases)];
+  var parts = [t.title, t.sponsor, t.nct, statusLabel(t.status), phaseLabel(t.phases)]
+    .concat(t.conditions || [], t.terms || []);
   if (t.nearest) parts.push(t.nearest.city, t.nearest.state, t.nearest.facility);
   return parts.filter(Boolean);
 }
 
-function trialItem(t, showPosted) {
+function trialItem(t, showPosted, isRelated) {
   var distance = null;
   if (t.nearest) {
     var d = t.nearest.distance;
@@ -843,14 +1103,22 @@ function trialItem(t, showPosted) {
                (d < 1.05 && d >= 0.95 ? " mile" : " miles");
   }
 
-  var chips = '<span class="chip ' + (t.status === "RECRUITING" ? "go" : "wait") + '">' +
+  var chips = "";
+  if (isRelated) {
+    (t.terms || []).forEach(function (label) {
+      chips += '<span class="chip term">' + hl(label) + "</span> ";
+    });
+    if (t.listsGastric) chips += '<span class="chip gastric">Lists gastric</span> ';
+  }
+  chips += '<span class="chip ' + (t.status === "RECRUITING" ? "go" : "wait") + '">' +
                 hl(statusLabel(t.status)) + "</span> ";
   if (distance) chips += '<span class="chip">' + esc(distance) + "</span> ";
   chips += '<span class="chip">' + hl(phaseLabel(t.phases)) + "</span> ";
 
   var meta = chips + "&nbsp;" + hl(t.nct) + " · " + (showPosted
                ? "posted " + esc(age(t.posted))
-               : "updated " + esc(age(t.updated)));
+               : "updated " + esc(age(t.updated))) +
+             (isRelated && t.alsoInTrials ? ' · <span class="also">also in Trials</span>' : "");
 
   var where = "Site locations not listed";
   if (t.nearest) {
@@ -864,6 +1132,8 @@ function trialItem(t, showPosted) {
            '<a class="headline" href="https://clinicaltrials.gov/study/' + esc(t.nct) +
              '" target="_blank" rel="noopener">' + hl(t.title) + "</a>" +
            '<p class="blurb">' + hl(t.sponsor) + " · " + where + "</p>" +
+           (isRelated && t.conditions && t.conditions.length
+             ? '<p class="conds">' + hl(t.conditions.join(" · ")) + "</p>" : "") +
            '<div class="meta">' + meta + "</div>" +
          "</div></article>";
 }
