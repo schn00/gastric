@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-28T18:01:41.404805+00:00",
+ "updated": "2026-09-29T01:38:45.881744+00:00",
  "items": [
   {
    "title": "Antengene Starts Phase III CLINCH-3 Trial of ATG-022 in Advanced Gastric Cancer",
@@ -194,7 +194,8 @@
    "relax_title_rule": true,
    "first_seen": "2026-09-25T16:16:12.722178+00:00",
    "also_in": [
-    "Dealroom.co"
+    "Dealroom.co",
+    "app.dealroom.co"
    ]
   },
   {
@@ -316,7 +317,10 @@
    "source": "Targeted Oncology",
    "published": "2026-05-14T07:00:00+00:00",
    "blurb": "Oncologists Weigh Real-World Nuances in First-Line Gastric Cancer Targeted Oncology",
-   "first_seen": "2026-09-20T10:13:51.573647+00:00"
+   "first_seen": "2026-09-20T10:13:51.573647+00:00",
+   "also_in": [
+    "targetedonc.com"
+   ]
   },
   {
    "title": "Addition of Toripalimab to Perioperative Chemotherapy in Locally Advanced Gastric or Gastroesophageal Junction Cancer",
