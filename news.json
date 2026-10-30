@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29T16:46:26.957486+00:00",
+ "updated": "2026-10-30T01:45:20.662984+00:00",
  "items": [
   {
    "title": "CT venous-phase radiomics models distinguish early from advanced gastric cancer before surgery",
@@ -48,7 +48,10 @@
    "published": "2026-10-25T19:02:52+00:00",
    "blurb": "Takeda to seek Japan approval for gastric cancer drug next year Reuters",
    "relax_title_rule": true,
-   "first_seen": "2026-10-25T23:58:42.050369+00:00"
+   "first_seen": "2026-10-25T23:58:42.050369+00:00",
+   "also_in": [
+    "Bilyonaryo Business"
+   ]
   },
   {
    "title": "Sonesitatug Vedotin Cuts Death Risk 42% in Advanced Gastric Cancer Trial",
@@ -73,6 +76,15 @@
    "published": "2026-10-23T15:52:14+00:00",
    "blurb": "RAMIRIS Trial at ESMO 2026: FOLFIRI Plus Ramucirumab Versus Paclitaxel Plus Ramucirumab in Advanced Gastroesophageal Adenocarcinoma Oncodaily",
    "first_seen": "2026-10-24T18:40:10.440307+00:00"
+  },
+  {
+   "title": "2026 ESMO LBA | Innovent Announces International Phase 3 Study of Arcotatug Tavatecan (CLDN18.2-ADC) in Gastric Cancer Met Dual Primary Endpoints of PFS and OS",
+   "url": "https://news.google.com/rss/articles/CBMiygJBVV95cUxQQzFpMzUwNFBZbk9uTnhlb0pjSTdQem1MUDJkTl9kcGxja0FGZ2VHSUlfUXZ5OG9jTmNPZmRhbGVMaXhGOXY2S0VqVUdNVjEtWWtaamtWbldjbUFJUnhmOEJQWFR6Wjg4N09zWERPalR6WFdlTDdOTU9qZU9iTUNaODJsTUtKSWFnX0lIMlVxaWZqbE52UVNmekNKZHRJMVdVY3BzVy1aR2VMNF85T3Vodnd6aXIzenhkMlRkUEhoWW1fRHhFN3VsSXNVaHlKckNMZ3ptQWNiUEkxaVNFMlV2UDVDcHhRVnRoSERSUEpEWFZxT3hhU0gtSEpqdm1VWGhlMVcwNGNTQjNhRmpyajZhdlotRzAwRDNNWVJoWkRQUi1MdHNqMm1fTGhiVEk4Y3dJWkdYaVpnUktTdjFxWnBNc2duUjJFbjd1bEHSAc8CQVVfeXFMTVMzZUI4ZGlYZTk0ZTZ1VVdEQUh6bll4XzlUV3ZxbVNrcmJSUjEtb2FvcmJnWHR0TlVsRGU5SnM3S3luRS1yWTZRcVJtbVF3dXc3Rl9OOVo1N1FBa3NxdDl4cl9VUWpxYXljTGROZHlMQ0NqYUNkZ0ZEV1RkSlF4dW9ZSmVQNmhxYmNabEtIUjZ0VmZFZjY3SnJTU0RsVElmZXk2OENEdk85MDMyTk1VZUdXQ0dMLXVDVUJkSWlmdnRNT3JtTVowbEVDZV9NNTNJdVNjX1RPZDZwZFFsM3FNYl9yUDgyU2REcWpQWVdmWmpfalV3cHFPTGQ2ZFFQdDBWU21qVF9uU2lEY2cxSkowdXNfalphcTQ4S2lrQjFoQjMtZ1N4ak56RjFsYXhTcGZXUlpUMU9HSDd0d21VcGgwMjktR0NwcHVQX2thRWJvQVE?oc=5",
+   "source": "The Manila Times",
+   "published": "2026-10-23T14:22:15+00:00",
+   "blurb": "2026 ESMO LBA | Innovent Announces International Phase 3 Study of Arcotatug Tavatecan (CLDN18.2-ADC) in Gastric Cancer Met Dual Primary Endpoints of PFS and OS The Manila Times",
+   "relax_title_rule": true,
+   "first_seen": "2026-10-30T01:45:20.661589+00:00"
   },
   {
    "title": "Ziihera® (zanidatamab-hrii) Combinations Demonstrate Sustained Survival at Three Years in First-Line HER2+ Advanced Gastroesophageal Adenocarcinoma at ESMO 2026",
