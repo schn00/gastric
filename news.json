@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13T17:35:35.917741+00:00",
+ "updated": "2026-11-14T02:05:52.827586+00:00",
  "items": [
   {
    "title": "Second-Line Trastuzumab Deruxtecan Yields 23-Month Progression-Free Survival in Gastroesophageal Cancer",
@@ -39,7 +39,10 @@
    "source": "Targeted Oncology",
    "published": "2026-11-11T20:08:10+00:00",
    "blurb": "Arcotatug Tavatecan Offers Manageable Safety in Advanced Gastric Cancer Targeted Oncology",
-   "first_seen": "2026-11-12T02:46:39.665841+00:00"
+   "first_seen": "2026-11-12T02:46:39.665841+00:00",
+   "also_in": [
+    "Targeted Onc"
+   ]
   },
   {
    "title": "Arcotatug tavatecan (IBI343/TAK-921) versus treatment of physician’s choice (TPC) in previously treated, advanced gastric or gastroesophageal junction adenocarcinoma (G/GEJA): First interim analysis of the randomized, open-label, phase 3, G-HOPE-001 st",
